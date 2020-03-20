@@ -51,20 +51,15 @@ function findCurrency(type) {
     case "sepadirectdebit":
     case "directEbanking":
       return "EUR";
-      break;
     case "wechatpayqr":
     case "alipay":
       return "CNY";
-      break;
     case "dotpay":
       return "PLN";
-      break;
     case "boletobancario":
       return "BRL";
-      break;
     default:
       return "EUR";
-      break;
   }
 }
 
