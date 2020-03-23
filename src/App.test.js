@@ -4,6 +4,7 @@ import { Provider } from "react-redux";
 import store from "./app/store";
 import App from "./App";
 
+// @ts-ignore
 test("renders learn react link", () => {
   const { getByText } = render(
     <Provider store={store}>
@@ -11,5 +12,6 @@ test("renders learn react link", () => {
     </Provider>
   );
 
+  // @ts-ignore
   expect(getByText(/learn/i)).toBeInTheDocument();
 });

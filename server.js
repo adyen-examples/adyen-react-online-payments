@@ -107,6 +107,7 @@ app.post("/initiatePayment", (req, res) => {
       shopperIP: "192.168.1.3",
       channel: "Web",
       additionalData: {
+        // @ts-ignore
         allow3DS2: true
       },
       returnUrl: "http://localhost:8080/handleShopperRedirect",
