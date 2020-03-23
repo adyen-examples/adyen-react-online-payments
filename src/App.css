@@ -1,39 +1,129 @@
-.App {
+.main-container {
+  margin: auto;
+  max-width: 1048px;
+  padding: 0 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.integration-list {
+  display: flex;
+  margin-top: 6%;
+  max-width: 1048px;
+}
+
+@media (min-width: 768px) {
+  .integration-list {
+    margin-left: -8px;
+    margin-bottom: -8px;
+    margin-right: -8px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .integration-list {
+    margin-left: -16px;
+    margin-bottom: -16px;
+    margin-right: -16px;
+  }
+}
+
+.integration-list-item {
+  background: #f7f8f9;
+  border-radius: 6px;
+  flex: 1 1 0;
+  margin: 4px;
+  min-width: 40%;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #f7f8f9;
+}
+
+.integration-list-item:hover {
+  box-shadow: 0 16px 24px 0 #e5eaef;
+  text-decoration: none;
+  border: 1px solid #06f;
+}
+
+@media (min-width: 768px) {
+  .integration-list-item {
+    margin-left: 16px;
+    margin-bottom: 16px;
+    margin-right: 16px;
+    margin-top: 16px;
+    min-width: 25%;
+  }
+}
+
+.integration-list-item-link {
+  padding: 20px;
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .integration-list-item-link {
+    padding-left: 28px;
+    padding-bottom: 28px;
+    padding-right: 28px;
+    padding-top: 28px;
+  }
+}
+
+.integration-list-item-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.integration-list-item-title {
+  margin: 0;
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.integration-list-item-title {
+  color: #00112c;
+  font-family: "Fakt", sans-serif, Helvetica, Arial;
+  font-size: 1em;
+  font-weight: 700;
+  margin: 10px 0 0;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-float infinite 3s ease-in-out;
+@media (min-width: 768px) {
+  .integration-list-item-title {
+    font-size: 24px;
+    margin-left: 0;
+    margin-bottom: 6px;
+    margin-right: 0;
   }
 }
 
-.App-header {
-  min-height: 100vh;
+.integration-list-item-subtitle {
+  color: #00112c;
+  font-family: "Fakt", sans-serif, Helvetica, Arial;
+  font-size: 0.67em;
+  font-weight: 700;
+  margin: 10px 0 0;
+}
+
+@media (min-width: 768px) {
+  .integration-list-item-subtitle {
+    font-size: 16px;
+    margin-left: 0;
+    margin-bottom: 6px;
+    margin-right: 0;
+  }
+}
+
+.title-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
 }
 
-.App-link {
-  color: rgb(112, 76, 182);
-}
-
-@keyframes App-logo-float {
-  0% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(10px)
-  }
-  100% {
-    transform: translateY(0px)
-  }
+.info {
+  margin-top: 10%;
+  color: #00112c;
+  font-family: "Fakt", sans-serif, Helvetica, Arial;
 }
