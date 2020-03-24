@@ -39,6 +39,45 @@ app.get("/", function(req, res) {
   res.sendFile(path.join(__dirname, "build", "index.html"));
 });
 
+// // Checkout page (make a payment)
+// app.get("/api/checkout/:type", async (req, res) => {
+//   const response = await checkout.paymentMethods({
+//     channel: "Web",
+//     merchantAccount: process.env.MERCHANT_ACCOUNT
+//   });
+//   res.render("payment", {
+//     type: req.params.type,
+//     originKey: process.env.ORIGIN_KEY,
+//     response: JSON.stringify(response)
+//   });
+// });
+
+app.all("/handleShopperRedirect", (req, res) => {
+  // Create the payload for submitting payment details
+  let payload = {};
+  payload["details"] = req.query;
+  payload["paymentData"] = req.cookies["paymentData"];
+
+  checkout.paymentsDetails(payload).then(response => {
+    res.clearCookie("paymentData");
+    // Conditionally handle different result codes for the shopper
+    switch (response.resultCode) {
+      case "Authorised":
+        res.redirect("/status/success");
+        break;
+      case "Pending":
+        res.redirect("/status/pending");
+        break;
+      case "Refused":
+        res.redirect("/status/failed");
+        break;
+      default:
+        res.redirect("/status/error");
+        break;
+    }
+  });
+});
+
 /* ################# end CLIENT ENDPOINTS ###################### */
 
 /* ################# UTILS ###################### */
@@ -67,123 +106,59 @@ function findCurrency(type) {
 
 /* ################# API ENDPOINTS ###################### */
 
-// Get payment methods
-app.get("getPaymentMethods", (req, res) => {
-  checkout
-    .paymentMethods({
-      channel: "Web",
-      merchantAccount: process.env.MERCHANT_ACCOUNT
-    })
-    .then(response => {
-      res.json(response);
-    });
+// Get Adyen configuration
+app.get("/api/config", (req, res) => {
+  return res.status(200).json({
+    locale: "en_NL",
+    environment: "test",
+    originKey: process.env.ORIGIN_KEY
+  });
 });
 
-// Checkout page (make a payment)
-app.get("/checkout/:type", (req, res) => {
-  checkout
-    .paymentMethods({
-      channel: "Web",
-      merchantAccount: process.env.MERCHANT_ACCOUNT
-    })
-    .then(response => {
-      res.render("payment", {
-        type: req.params.type,
-        originKey: process.env.ORIGIN_KEY,
-        response: JSON.stringify(response)
-      });
-    });
+// Get payment methods
+app.post("/api/paymentMethods", async (req, res) => {
+  const response = await checkout.paymentMethods({
+    channel: "Web",
+    merchantAccount: process.env.MERCHANT_ACCOUNT
+  });
+  return res.status(200).json(response);
 });
 
 // Submitting a payment
-app.post("/initiatePayment", (req, res) => {
-  let currency = findCurrency(req.body.paymentMethod.type);
+app.post("/api/payments", async (req, res) => {
+  const currency = findCurrency(req.body.paymentMethod.type);
+  const shopperIP = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
 
-  checkout
-    .payments({
-      amount: { currency, value: 1000 },
-      reference: "12345",
-      merchantAccount: process.env.MERCHANT_ACCOUNT,
-      shopperIP: "192.168.1.3",
-      channel: "Web",
-      additionalData: {
-        // @ts-ignore
-        allow3DS2: true
-      },
-      returnUrl: "http://localhost:8080/handleShopperRedirect",
-      browserInfo: req.body.browserInfo,
-      // riskData: req.body.riskData,
-      paymentMethod: req.body.paymentMethod
-    })
-    .then(response => {
-      let paymentMethodType = req.body.paymentMethod.type;
-      let resultCode = response.resultCode;
-      let redirectUrl =
-        response.redirect !== undefined ? response.redirect.url : null;
-      let action = null;
-
-      if (response.action) {
-        action = response.action;
-        res.cookie("paymentData", action.paymentData);
-      }
-
-      res.json({ paymentMethodType, resultCode, redirectUrl, action });
-    });
-});
-
-app.get("/handleShopperRedirect", (req, res) => {
-  // Create the payload for submitting payment details
-  let payload = {};
-  payload["details"] = req.query;
-  payload["paymentData"] = req.cookies["paymentData"];
-
-  checkout.paymentsDetails(payload).then(response => {
-    res.clearCookie("paymentData");
-    // Conditionally handle different result codes for the shopper
-    switch (response.resultCode) {
-      case "Authorised":
-        res.redirect("/success");
-        break;
-      case "Pending":
-        res.redirect("/pending");
-        break;
-      case "Refused":
-        res.redirect("/failed");
-        break;
-      default:
-        res.redirect("/error");
-        break;
-    }
+  // Ideally the data passed here should be computed based on business logic
+  const response = await checkout.payments({
+    amount: { currency, value: 1000 }, // value is 10€ in minor units
+    reference: `${Date.now()}`,
+    merchantAccount: process.env.MERCHANT_ACCOUNT,
+    // @ts-ignore
+    shopperIP,
+    channel: "Web",
+    additionalData: {
+      // @ts-ignore
+      allow3DS2: true
+    },
+    returnUrl: "http://localhost:8080/handleShopperRedirect",
+    browserInfo: req.body.browserInfo,
+    paymentMethod: req.body.paymentMethod
   });
+  let paymentMethodType = req.body.paymentMethod.type;
+  let resultCode = response.resultCode;
+  let redirectUrl = response.redirect !== undefined ? response.redirect.url : null;
+  let action = null;
+
+  if (response.action) {
+    action = response.action;
+    res.cookie("paymentData", action.paymentData, { maxAge: 900000, httpOnly: true });
+  }
+
+  res.status(200).json({ paymentMethodType, resultCode, redirectUrl, action });
 });
 
-app.post("/handleShopperRedirect", (req, res) => {
-  // Create the payload for submitting payment details
-  let payload = {};
-  payload["details"] = req.body;
-  payload["paymentData"] = req.cookies["paymentData"];
-
-  checkout.paymentsDetails(payload).then(response => {
-    res.clearCookie("paymentData");
-    // Conditionally handle different result codes for the shopper
-    switch (response.resultCode) {
-      case "Authorised":
-        res.redirect("/success");
-        break;
-      case "Pending":
-        res.redirect("/pending");
-        break;
-      case "Refused":
-        res.redirect("/failed");
-        break;
-      default:
-        res.redirect("/error");
-        break;
-    }
-  });
-});
-
-app.post("/submitAdditionalDetails", (req, res) => {
+app.post("/api/paymentDetails", (req, res) => {
   // Create the payload for submitting payment details
   let payload = {};
   payload["details"] = req.body.details;

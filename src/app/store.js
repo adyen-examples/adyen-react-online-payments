@@ -1,8 +1,8 @@
-import { configureStore } from '@reduxjs/toolkit';
-import counterReducer from '../features/counter/counterSlice';
+import { configureStore } from "@reduxjs/toolkit";
+import paymentReducer from "./paymentSlice";
 
 export default configureStore({
   reducer: {
-    counter: counterReducer,
-  },
+    payment: paymentReducer
+  }
 });

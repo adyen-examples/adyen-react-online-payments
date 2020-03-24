@@ -5,7 +5,7 @@ import store from "./app/store";
 import App from "./App";
 
 // @ts-ignore
-test("renders learn react link", () => {
+test("renders Select a demo", () => {
   const { getByText } = render(
     <Provider store={store}>
       <App />
@@ -13,5 +13,9 @@ test("renders learn react link", () => {
   );
 
   // @ts-ignore
-  expect(getByText(/learn/i)).toBeInTheDocument();
+  expect(getByText(/Select a demo/i)).toBeInTheDocument();
+  // @ts-ignore
+  expect(getByText(/Drop-in/i)).toBeInTheDocument();
+  // @ts-ignore
+  expect(getByText(/Card/i)).toBeInTheDocument();
 });

@@ -2,6 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import { Checkout } from "./features/checkout/Checkout";
 import { Preview } from "./features/preview/Preview";
+import { Status } from "./features/status/Status";
 import "./App.css";
 
 function App() {
@@ -13,6 +14,9 @@ function App() {
         </Route>
         <Route path="/checkout/:type">
           <Checkout />
+        </Route>
+        <Route path="/status/:type">
+          <Status />
         </Route>
         <Route path="/">
           <div className="main-container">

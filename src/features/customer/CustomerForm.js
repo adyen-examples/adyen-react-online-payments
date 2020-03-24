@@ -18,13 +18,13 @@ export function CustomerForm() {
               <label className="addressLabel" htmlFor="firstName">
                 First Name
               </label>
-              <input type="text" className="form-control" placeholder="First Name" name="firstName" value="Joe" readOnly />
+              <input type="text" className="form-control" placeholder="First Name" name="firstName" value="Joe" />
             </div>
             <div className="addressInput" id="last">
               <label className="addressLabel" htmlFor="lastName">
                 Last Name
               </label>
-              <input type="text" className="form-control" placeholder="Last Name" name="lastName" value="Bob" readOnly />
+              <input type="text" className="form-control" placeholder="Last Name" name="lastName" value="Bob" />
             </div>
           </div>
           <div className="addressLine2" id="addressLine">
@@ -32,7 +32,7 @@ export function CustomerForm() {
               <label className="addressLabel" htmlFor="street">
                 Street
               </label>
-              <input type="text" className="form-control" placeholder="Street" name="street" value="274 Brannan Street" readOnly />
+              <input type="text" className="form-control" placeholder="Street" name="street" value="274 Brannan Street" />
             </div>
           </div>
           <div className="addressLine3" id="addressLine">
@@ -40,7 +40,7 @@ export function CustomerForm() {
               <label className="addressLabel" htmlFor="city">
                 City
               </label>
-              <input type="text" className="form-control" placeholder="City" name="city" value="San Francisco" readOnly />
+              <input type="text" className="form-control" placeholder="City" name="city" value="San Francisco" />
             </div>
           </div>
           <div className="addressLine4" id="addressLine">
@@ -48,19 +48,19 @@ export function CustomerForm() {
               <label className="addressLabel" htmlFor="state">
                 State
               </label>
-              <input type="text" className="form-control" placeholder="State" name="stateOrProvince" value="California" readOnly />
+              <input type="text" className="form-control" placeholder="State" name="stateOrProvince" value="California" />
             </div>
             <div className="addressInput" id="zip">
               <label className="addressLabel" htmlFor="zipcode">
                 Zip Code
               </label>
-              <input type="text" className="form-control" placeholder="Zip Code" name="postalCode" value="94107" readOnly />
+              <input type="text" className="form-control" placeholder="Zip Code" name="postalCode" value="94107" />
             </div>
             <div className="addressInput" id="country">
               <label className="addressLabel" htmlFor="country">
                 Country
               </label>
-              <input type="text" className="form-control" placeholder="Country" name="country" value="United States" readOnly />
+              <input type="text" className="form-control" placeholder="Country" name="country" value="United States" />
             </div>
           </div>
         </form>
