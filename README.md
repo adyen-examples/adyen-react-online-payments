@@ -12,10 +12,10 @@ This repository includes examples of PCI-compliant UI integrations for online pa
 - [Component](https://docs.adyen.com/checkout/components-web)
   - Card
   - iDEAL
-    <!-- - Dotpay
-  - giropay
-  - SEPA Direct Debit
-  - SOFORT -->
+    <!-- - Dotpay -->
+    <!-- - giropay -->
+    <!-- - SEPA Direct Debit -->
+    <!-- - SOFORT  -->
 
 Each demo leverages Adyen's API Library for Node.js ([GitHub](https://github.com/Adyen/adyen-node-api-library) | [Docs](https://docs.adyen.com/development-resources/libraries#javascript)).
 
@@ -39,7 +39,7 @@ npm install
 
 ## Usage
 
-1. Update **./.env** with your [API key](https://docs.adyen.com/user-management/how-to-get-the-api-key), [Origin Key](https://docs.adyen.com/user-management/how-to-get-an-origin-key), and merchant account name (all credentials are in string format):
+1. Create a `./.env` file with your [API key](https://docs.adyen.com/user-management/how-to-get-the-api-key), [Origin Key](https://docs.adyen.com/user-management/how-to-get-an-origin-key), and merchant account name (all credentials are in string format):
 
 ```
 API_KEY="your_API_key_here"
