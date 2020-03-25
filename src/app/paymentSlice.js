@@ -5,9 +5,9 @@ export const slice = createSlice({
   initialState: {
     valid: false,
     paid: false,
-    paymentMethodsRes: {},
-    paymentRes: {},
-    paymentDetailsRes: {},
+    paymentMethodsRes: null,
+    paymentRes: null,
+    paymentDetailsRes: null,
     config: {
       paymentMethodsConfiguration: {
         ideal: {
@@ -60,7 +60,7 @@ export const getPaymentMethods = () => async dispatch => {
   dispatch(paymentMethods(await response.json()));
 };
 
-export const initiatePayment = (data) => async dispatch => {
+export const initiatePayment = data => async dispatch => {
   const response = await fetch("/api/payments", {
     method: "POST",
     body: JSON.stringify(data),
