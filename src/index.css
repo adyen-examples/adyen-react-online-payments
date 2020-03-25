@@ -3,7 +3,7 @@ html,
 body {
   width: 100%;
   margin: 0;
-  font-family: "Helvetica Neue";
+  font-family: "Fakt", sans-serif, Helvetica, Arial;
 }
 
 a:hover {

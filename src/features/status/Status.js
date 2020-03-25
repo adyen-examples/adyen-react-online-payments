@@ -1,9 +1,8 @@
 import React from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useLocation } from "react-router-dom";
 
-const getMessage = type => {
-  let msg = <span>Your order has been successfully placed.</span>;
-  let img = "success";
+const Message = ({ type, reason }) => {
+  let msg, img;
   switch (type) {
     case "pending":
       msg = <span>Your order has been received! Payment completion pending.</span>;
@@ -15,20 +14,21 @@ const getMessage = type => {
     case "error":
       msg = (
         <span>
-          Error! Please review response in console and refer to{" "}
+          Error! Reason: {reason || "Internal error"}, refer to&nbsp;
           <a href="https://docs.adyen.com/development-resources/response-handling">Response handling.</a>
         </span>
       );
       img = "failed";
       break;
     default:
-      break;
+      msg = <span>Your order has been successfully placed.</span>;
+      img = "success";
   }
 
   return (
     <>
       <img src={`/images/${img}.svg`} className="status-image" alt="" />
-      {["failed", "error"].includes(type) ? <img src="/images/thank-you.svg" className="status-image" alt="" /> : null}
+      {["failed", "error"].includes(type) ? null : <img src="/images/thank-you.svg" className="status-image" alt="" />}
       <p className="status-message">{msg}</p>
     </>
   );
@@ -36,11 +36,13 @@ const getMessage = type => {
 
 export function Status() {
   let { type } = useParams();
+  let query = new URLSearchParams(useLocation().search);
+  let reason = query ? query.get("reason") : "";
 
   return (
     <div className="status-container">
       <div className="status">
-        {getMessage(type)}
+        <Message type={type} reason={reason} />
         <Link to="/" className="button">
           Return Home
         </Link>

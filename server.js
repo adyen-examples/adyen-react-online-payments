@@ -2,9 +2,12 @@ const express = require("express");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const dotenv = require("dotenv");
+const morgan = require('morgan');
 const { Client, Config, CheckoutAPI } = require("@adyen/api-library");
 const app = express();
 
+// setup request logging
+app.use(morgan('dev'))
 // Parse JSON bodies
 app.use(express.json());
 // Parse URL-encoded bodies
@@ -39,40 +42,31 @@ app.get("/", function(req, res) {
   res.sendFile(path.join(__dirname, "build", "index.html"));
 });
 
-// // Checkout page (make a payment)
-// app.get("/api/checkout/:type", async (req, res) => {
-//   const response = await checkout.paymentMethods({
-//     channel: "Web",
-//     merchantAccount: process.env.MERCHANT_ACCOUNT
-//   });
-//   res.render("payment", {
-//     type: req.params.type,
-//     originKey: process.env.ORIGIN_KEY,
-//     response: JSON.stringify(response)
-//   });
-// });
-
+// Handle all redirects from payment type
 app.all("/handleShopperRedirect", (req, res) => {
   // Create the payload for submitting payment details
   let payload = {};
   payload["details"] = req.query;
   payload["paymentData"] = req.cookies["paymentData"];
+  const originalHost = req.cookies["originalHost"] || "";
 
   checkout.paymentsDetails(payload).then(response => {
     res.clearCookie("paymentData");
+    res.clearCookie("originalHost");
     // Conditionally handle different result codes for the shopper
     switch (response.resultCode) {
       case "Authorised":
-        res.redirect("/status/success");
+        res.redirect(`${originalHost}/status/success`);
         break;
       case "Pending":
-        res.redirect("/status/pending");
+      case "Received":
+        res.redirect(`${originalHost}/status/pending`);
         break;
       case "Refused":
-        res.redirect("/status/failed");
+        res.redirect(`${originalHost}/status/failed`);
         break;
       default:
-        res.redirect("/status/error");
+        res.redirect(`${originalHost}/status/error?reason=${response.resultCode}`);
         break;
     }
   });
@@ -80,36 +74,11 @@ app.all("/handleShopperRedirect", (req, res) => {
 
 /* ################# end CLIENT ENDPOINTS ###################### */
 
-/* ################# UTILS ###################### */
-
-function findCurrency(type) {
-  switch (type) {
-    case "ideal":
-    case "giropay":
-    case "klarna_paynow":
-    case "sepadirectdebit":
-    case "directEbanking":
-      return "EUR";
-    case "wechatpayqr":
-    case "alipay":
-      return "CNY";
-    case "dotpay":
-      return "PLN";
-    case "boletobancario":
-      return "BRL";
-    default:
-      return "EUR";
-  }
-}
-
-/* ################# end UTILS ###################### */
-
 /* ################# API ENDPOINTS ###################### */
 
 // Get Adyen configuration
 app.get("/api/config", (req, res) => {
   return res.status(200).json({
-    locale: "en_NL",
     environment: "test",
     originKey: process.env.ORIGIN_KEY
   });
@@ -153,6 +122,8 @@ app.post("/api/payments", async (req, res) => {
   if (response.action) {
     action = response.action;
     res.cookie("paymentData", action.paymentData, { maxAge: 900000, httpOnly: true });
+    const originalHost = new URL(req.headers["referer"]);
+    originalHost && res.cookie("originalHost", originalHost.origin, { maxAge: 900000, httpOnly: true });
   }
 
   res.status(200).json({ paymentMethodType, resultCode, redirectUrl, action });
@@ -175,6 +146,30 @@ app.post("/api/paymentDetails", (req, res) => {
 });
 
 /* ################# end API ENDPOINTS ###################### */
+
+/* ################# UTILS ###################### */
+
+function findCurrency(type) {
+  switch (type) {
+    case "ideal":
+    case "giropay":
+    case "klarna_paynow":
+    case "sepadirectdebit":
+    case "directEbanking":
+      return "EUR";
+    case "wechatpayqr":
+    case "alipay":
+      return "CNY";
+    case "dotpay":
+      return "PLN";
+    case "boletobancario":
+      return "BRL";
+    default:
+      return "EUR";
+  }
+}
+
+/* ################# end UTILS ###################### */
 
 // Start server
 const PORT = process.env.PORT || 8080;
