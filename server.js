@@ -30,20 +30,15 @@ const client = new Client({ config });
 client.setEnvironment("TEST");
 const checkout = new CheckoutAPI(client);
 
-/* ################# CLIENT ENDPOINTS ###################### */
-
-// Index (select a demo)
-app.get("/", function(req, res) {
-  res.sendFile(path.join(__dirname, "build", "index.html"));
-});
+/* ################# API ENDPOINTS ###################### */
 
 // Health check
-app.get("/health", function(req, res) {
+app.get("/api/health", (req, res) => {
   return res.send("ok");
 });
 
 // Handle all redirects from payment type
-app.all("/handleShopperRedirect", async (req, res) => {
+app.all("/api/handleShopperRedirect", async (req, res) => {
   // Create the payload for submitting payment details
   const payload = {};
   payload["details"] = req.method === "GET" ? req.query : req.body;
@@ -75,10 +70,6 @@ app.all("/handleShopperRedirect", async (req, res) => {
     res.redirect(`${originalHost}/status/error?reason=${err.message}`);
   }
 });
-
-/* ################# end CLIENT ENDPOINTS ###################### */
-
-/* ################# API ENDPOINTS ###################### */
 
 // Get Adyen configuration
 app.get("/api/config", (req, res) => {
@@ -120,7 +111,7 @@ app.post("/api/payments", async (req, res) => {
         // @ts-ignore
         allow3DS2: true
       },
-      returnUrl: "http://localhost:8080/handleShopperRedirect",
+      returnUrl: "http://localhost:8080/api/handleShopperRedirect",
       browserInfo: req.body.browserInfo,
       paymentMethod: req.body.paymentMethod
     });
@@ -164,6 +155,15 @@ app.post("/api/paymentDetails", async (req, res) => {
 });
 
 /* ################# end API ENDPOINTS ###################### */
+
+/* ################# CLIENT ENDPOINTS ###################### */
+
+// Handles any requests that doesn't match the above
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "build", "index.html"));
+});
+
+/* ################# end CLIENT ENDPOINTS ###################### */
 
 /* ################# UTILS ###################### */
 
