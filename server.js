@@ -2,12 +2,12 @@ const express = require("express");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const dotenv = require("dotenv");
-const morgan = require('morgan');
+const morgan = require("morgan");
 const { Client, Config, CheckoutAPI } = require("@adyen/api-library");
 const app = express();
 
 // setup request logging
-app.use(morgan('dev'))
+app.use(morgan("dev"));
 // Parse JSON bodies
 app.use(express.json());
 // Parse URL-encoded bodies
@@ -32,25 +32,26 @@ const checkout = new CheckoutAPI(client);
 
 /* ################# CLIENT ENDPOINTS ###################### */
 
-// Health check
-app.get("/health", function(req, res) {
-  return res.send("ok");
-});
-
 // Index (select a demo)
 app.get("/", function(req, res) {
   res.sendFile(path.join(__dirname, "build", "index.html"));
 });
 
+// Health check
+app.get("/health", function(req, res) {
+  return res.send("ok");
+});
+
 // Handle all redirects from payment type
-app.all("/handleShopperRedirect", (req, res) => {
+app.all("/handleShopperRedirect", async (req, res) => {
   // Create the payload for submitting payment details
-  let payload = {};
-  payload["details"] = req.query;
+  const payload = {};
+  payload["details"] = req.method === "GET" ? req.query : req.body;
   payload["paymentData"] = req.cookies["paymentData"];
   const originalHost = req.cookies["originalHost"] || "";
 
-  checkout.paymentsDetails(payload).then(response => {
+  try {
+    const response = await checkout.paymentsDetails(payload);
     res.clearCookie("paymentData");
     res.clearCookie("originalHost");
     // Conditionally handle different result codes for the shopper
@@ -69,7 +70,10 @@ app.all("/handleShopperRedirect", (req, res) => {
         res.redirect(`${originalHost}/status/error?reason=${response.resultCode}`);
         break;
     }
-  });
+  } catch (err) {
+    console.error(`Error: ${err.message}, error code: ${err.errorCode}`);
+    res.redirect(`${originalHost}/status/error?reason=${err.message}`);
+  }
 });
 
 /* ################# end CLIENT ENDPOINTS ###################### */
@@ -78,7 +82,7 @@ app.all("/handleShopperRedirect", (req, res) => {
 
 // Get Adyen configuration
 app.get("/api/config", (req, res) => {
-  return res.status(200).json({
+  res.json({
     environment: "test",
     originKey: process.env.ORIGIN_KEY
   });
@@ -86,11 +90,16 @@ app.get("/api/config", (req, res) => {
 
 // Get payment methods
 app.post("/api/paymentMethods", async (req, res) => {
-  const response = await checkout.paymentMethods({
-    channel: "Web",
-    merchantAccount: process.env.MERCHANT_ACCOUNT
-  });
-  return res.status(200).json(response);
+  try {
+    const response = await checkout.paymentMethods({
+      channel: "Web",
+      merchantAccount: process.env.MERCHANT_ACCOUNT
+    });
+    res.json(response);
+  } catch (err) {
+    console.error(`Error: ${err.message}, error code: ${err.errorCode}`);
+    res.status(err.statusCode).json(err.message);
+  }
 });
 
 // Submitting a payment
@@ -98,51 +107,60 @@ app.post("/api/payments", async (req, res) => {
   const currency = findCurrency(req.body.paymentMethod.type);
   const shopperIP = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
 
-  // Ideally the data passed here should be computed based on business logic
-  const response = await checkout.payments({
-    amount: { currency, value: 1000 }, // value is 10€ in minor units
-    reference: `${Date.now()}`,
-    merchantAccount: process.env.MERCHANT_ACCOUNT,
-    // @ts-ignore
-    shopperIP,
-    channel: "Web",
-    additionalData: {
+  try {
+    // Ideally the data passed here should be computed based on business logic
+    const response = await checkout.payments({
+      amount: { currency, value: 1000 }, // value is 10€ in minor units
+      reference: `${Date.now()}`,
+      merchantAccount: process.env.MERCHANT_ACCOUNT,
       // @ts-ignore
-      allow3DS2: true
-    },
-    returnUrl: "http://localhost:8080/handleShopperRedirect",
-    browserInfo: req.body.browserInfo,
-    paymentMethod: req.body.paymentMethod
-  });
-  let paymentMethodType = req.body.paymentMethod.type;
-  let resultCode = response.resultCode;
-  let redirectUrl = response.redirect !== undefined ? response.redirect.url : null;
-  let action = null;
+      shopperIP,
+      channel: "Web",
+      additionalData: {
+        // @ts-ignore
+        allow3DS2: true
+      },
+      returnUrl: "http://localhost:8080/handleShopperRedirect",
+      browserInfo: req.body.browserInfo,
+      paymentMethod: req.body.paymentMethod
+    });
+    let paymentMethodType = req.body.paymentMethod.type;
+    let resultCode = response.resultCode;
+    let redirectUrl = response.redirect !== undefined ? response.redirect.url : null;
+    let action = null;
 
-  if (response.action) {
-    action = response.action;
-    res.cookie("paymentData", action.paymentData, { maxAge: 900000, httpOnly: true });
-    const originalHost = new URL(req.headers["referer"]);
-    originalHost && res.cookie("originalHost", originalHost.origin, { maxAge: 900000, httpOnly: true });
+    if (response.action) {
+      action = response.action;
+      res.cookie("paymentData", action.paymentData, { maxAge: 900000, httpOnly: true });
+      const originalHost = new URL(req.headers["referer"]);
+      originalHost && res.cookie("originalHost", originalHost.origin, { maxAge: 900000, httpOnly: true });
+    }
+
+    res.json({ paymentMethodType, resultCode, redirectUrl, action });
+  } catch (err) {
+    console.error(`Error: ${err.message}, error code: ${err.errorCode}`);
+    res.status(err.statusCode).json(err.message);
   }
-
-  res.status(200).json({ paymentMethodType, resultCode, redirectUrl, action });
 });
 
-app.post("/api/paymentDetails", (req, res) => {
+app.post("/api/paymentDetails", async (req, res) => {
   // Create the payload for submitting payment details
-  let payload = {};
+  const payload = {};
   payload["details"] = req.body.details;
   payload["paymentData"] = req.body.paymentData;
 
-  // Return the response back to client
-  // (for further action handling or presenting result to shopper)
-  checkout.paymentsDetails(payload).then(response => {
+  try {
+    // Return the response back to client
+    // (for further action handling or presenting result to shopper)
+    const response = await checkout.paymentsDetails(payload);
     let resultCode = response.resultCode;
     let action = response.action || null;
 
     res.json({ action, resultCode });
-  });
+  } catch (err) {
+    console.error(`Error: ${err.message}, error code: ${err.errorCode}`);
+    res.status(err.statusCode).json(err.message);
+  }
 });
 
 /* ################# end API ENDPOINTS ###################### */
