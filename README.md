@@ -1,6 +1,6 @@
 # Adyen [online payment](https://docs.adyen.com/checkout) integration demos
 
-This repository includes examples of PCI-compliant UI integrations for online payments with Adyen. Within this demo app, you'll find a simplified version of an e-commerce website, complete with commented code to highlight key features and concepts of Adyen's API. Check out the underlying code to see how you can integrate Adyen to give your shoppers the option to pay with their preferred payment methods, all in a seamless checkout experience.
+This repository includes examples of PCI-compliant React UI integrations for online payments with Adyen. Within this demo app, you'll find a simplified version of an e-commerce website, complete with commented code to highlight key features and concepts of Adyen's API. Check out the underlying code to see how you can integrate Adyen to give your shoppers the option to pay with their preferred payment methods, all in a seamless checkout experience.
 
 ![Card checkout demo](public/images/cardcheckout.gif)
 
@@ -12,12 +12,13 @@ This repository includes examples of PCI-compliant UI integrations for online pa
 - [Component](https://docs.adyen.com/checkout/components-web)
   - Card
   - iDEAL
-    <!-- - Dotpay -->
-    <!-- - giropay -->
-    <!-- - SEPA Direct Debit -->
-    <!-- - SOFORT  -->
+  - giropay
+  - Dotpay
+  - EPS
+  - SOFORT
+  - Bancontact card
 
-Each demo leverages Adyen's API Library for Node.js ([GitHub](https://github.com/Adyen/adyen-node-api-library) | [Docs](https://docs.adyen.com/development-resources/libraries#javascript)).
+Each demo leverages Adyen's API Library for Node.js ([GitHub](https://github.com/Adyen/adyen-node-api-library) on the server side | [Docs](https://docs.adyen.com/development-resources/libraries#javascript)).
 
 ## Requirements
 
@@ -84,7 +85,7 @@ The server will reload if you make edits.<br />
 
 ### `npm start`
 
-Runs the React app in the development mode.<br />
+Runs the React client side app in the development mode.<br />
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
 The page will reload if you make edits.<br />
@@ -92,18 +93,16 @@ You will also see any lint errors in the console.
 
 ### `npm test`
 
-Launches the test runner in the interactive watch mode.<br />
+Launches the test runner in the interactive watch mode for React client side.<br />
 See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
 ### `npm build`
 
-Builds the app for production to the `build` folder.<br />
+Builds the React client side app for production to the `build` folder.<br />
 It correctly bundles React in production mode and optimizes the build for the best performance.
 
 The build is minified and the filenames include the hashes.<br />
 Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
 ### `npm eject`
 
