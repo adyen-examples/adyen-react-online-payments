@@ -50,6 +50,27 @@ function App() {
                   </div>
                 </Link>
               </li>
+              <li className="integration-list-item">
+                <Link to="/preview/giropay" className="integration-list-item-link">
+                  <div className="title-container">
+                    <p className="integration-list-item-title">giropay</p>
+                  </div>
+                </Link>
+              </li>
+              <li className="integration-list-item">
+                <Link to="/preview/eps" className="integration-list-item-link">
+                  <div className="title-container">
+                    <p className="integration-list-item-title">EPS</p>
+                  </div>
+                </Link>
+              </li>
+              <li className="integration-list-item">
+                <Link to="/preview/bcmc" className="integration-list-item-link">
+                  <div className="title-container">
+                    <p className="integration-list-item-title">Bancontact card</p>
+                  </div>
+                </Link>
+              </li>
             </ul>
           </div>
         </Route>

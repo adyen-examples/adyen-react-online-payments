@@ -169,12 +169,6 @@ app.get("*", (req, res) => {
 
 function findCurrency(type) {
   switch (type) {
-    case "ideal":
-    case "giropay":
-    case "klarna_paynow":
-    case "sepadirectdebit":
-    case "directEbanking":
-      return "EUR";
     case "wechatpayqr":
     case "alipay":
       return "CNY";
