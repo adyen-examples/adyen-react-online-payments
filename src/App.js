@@ -22,7 +22,7 @@ function App() {
           <div className="main-container">
             <div className="info">
               <h1>Select a demo</h1>
-              <p>Click to view an interactive example of a PCI-compliant UI integration for online payments.</p>
+              <p>Click to view an interactive example of a PCI-compliant React UI integration for online payments.</p>
               <p>
                 To learn more about client-side integration solutions, check out{" "}
                 <a href="https://docs.adyen.com/checkout">Online payments.</a>
@@ -61,6 +61,13 @@ function App() {
                 <Link to="/preview/eps" className="integration-list-item-link">
                   <div className="title-container">
                     <p className="integration-list-item-title">EPS</p>
+                  </div>
+                </Link>
+              </li>
+              <li className="integration-list-item">
+                <Link to="/preview/directEbanking" className="integration-list-item-link">
+                  <div className="title-container">
+                    <p className="integration-list-item-title">Sofort</p>
                   </div>
                 </Link>
               </li>
