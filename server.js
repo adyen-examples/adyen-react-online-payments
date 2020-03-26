@@ -113,7 +113,9 @@ app.post("/api/payments", async (req, res) => {
       },
       returnUrl: "http://localhost:8080/api/handleShopperRedirect",
       browserInfo: req.body.browserInfo,
-      paymentMethod: req.body.paymentMethod
+      paymentMethod: req.body.paymentMethod,
+      billingAddress: req.body.billingAddress,
+      origin: req.body.origin
     });
     let paymentMethodType = req.body.paymentMethod.type;
     let resultCode = response.resultCode;

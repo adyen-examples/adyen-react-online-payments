@@ -102,9 +102,13 @@ export const initiatePayment = data => async dispatch => {
   dispatch(payments([await response.json(), response.status]));
 };
 
-export const submitAdditionalDetails = () => async dispatch => {
+export const submitAdditionalDetails = data => async dispatch => {
   const response = await fetch("/api/paymentDetails", {
-    method: "POST"
+    method: "POST",
+    body: JSON.stringify(data),
+    headers: {
+      "Content-Type": "application/json"
+    }
   });
   dispatch(paymentDetails([await response.json(), response.status]));
 };

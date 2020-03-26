@@ -23,6 +23,7 @@ class ComponentContainer extends React.Component {
     this.paymentComponent = null;
     this.onSubmit = this.onSubmit.bind(this);
     this.onAdditionalDetails = this.onAdditionalDetails.bind(this);
+    this.processPaymentResponse = this.processPaymentResponse.bind(this);
   }
 
   componentDidMount() {
@@ -31,7 +32,7 @@ class ComponentContainer extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { paymentMethodsRes: paymentMethodsResponse, config, paymentRes, error } = this.props.payment;
+    const { paymentMethodsRes: paymentMethodsResponse, config, paymentRes, paymentDetailsRes, error } = this.props.payment;
     if (error && error !== prevProps.payment.error) {
       window.location.href = `/status/error?reason=${error}`;
       return;
@@ -53,23 +54,30 @@ class ComponentContainer extends React.Component {
       this.checkout.create(this.props.type).mount(this.paymentContainer.current);
     }
     if (paymentRes && paymentRes !== prevProps.payment.paymentRes) {
-      if (paymentRes.action) {
-        this.paymentComponent.handleAction(paymentRes.action);
-      } else {
-        switch (paymentRes.resultCode) {
-          case "Authorised":
-            window.location.href = "/status/success";
-            break;
-          case "Pending":
-            window.location.href = "/status/pending";
-            break;
-          case "Refused":
-            window.location.href = "/status/failed";
-            break;
-          default:
-            window.location.href = "/status/error";
-            break;
-        }
+      this.processPaymentResponse(paymentRes);
+    }
+    if (paymentRes && paymentDetailsRes !== prevProps.payment.paymentDetailsRes) {
+      this.processPaymentResponse(paymentDetailsRes);
+    }
+  }
+
+  processPaymentResponse(paymentRes) {
+    if (paymentRes.action) {
+      this.paymentComponent.handleAction(paymentRes.action);
+    } else {
+      switch (paymentRes.resultCode) {
+        case "Authorised":
+          window.location.href = "/status/success";
+          break;
+        case "Pending":
+          window.location.href = "/status/pending";
+          break;
+        case "Refused":
+          window.location.href = "/status/failed";
+          break;
+        default:
+          window.location.href = "/status/error";
+          break;
       }
     }
   }
