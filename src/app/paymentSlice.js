@@ -24,9 +24,26 @@ export const slice = createSlice({
       },
       locale: "en_NL",
       showPayButton: true
+    },
+    billingAddress: {
+      enableBilling: false,
+      firstName: "Joe",
+      lastName: "Bob",
+      houseNumberOrName: "274",
+      street: "Brannan Street",
+      city: "San Francisco",
+      stateOrProvince: "California",
+      postalCode: "94107",
+      country: "US"
     }
   },
   reducers: {
+    setBilling: (state, action) => {
+      state.billingAddress = {
+        ...state.billingAddress,
+        ...action.payload
+      };
+    },
     config: (state, action) => {
       state.config = {
         ...state.config,
@@ -60,7 +77,7 @@ export const slice = createSlice({
   }
 });
 
-export const { config, paymentMethods, payments, paymentDetails } = slice.actions;
+export const { setBilling, config, paymentMethods, payments, paymentDetails } = slice.actions;
 
 export const getAdyenConfig = () => async dispatch => {
   const response = await fetch("/api/config");

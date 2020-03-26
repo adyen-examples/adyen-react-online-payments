@@ -5,7 +5,7 @@ import { CustomerForm } from "../customer/CustomerForm";
 import { getAdyenConfig, getPaymentMethods, initiatePayment, submitAdditionalDetails } from "../../app/paymentSlice";
 
 export function Checkout() {
-  let { type } = useParams();
+  const { type } = useParams();
   return (
     <div id="whole-page">
       <div id="container">
@@ -75,8 +75,13 @@ class ComponentContainer extends React.Component {
   }
 
   onSubmit(state, component) {
+    const { billingAddress } = this.props.payment;
     if (state.isValid) {
-      this.props.initiatePayment(state.data);
+      this.props.initiatePayment({
+        ...state.data,
+        billingAddress: this.props.type === "card" && billingAddress.enableBilling ? billingAddress : null,
+        origin: window.location.origin
+      });
       this.paymentComponent = component;
     }
   }

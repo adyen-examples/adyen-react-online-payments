@@ -415,68 +415,39 @@
 
 .addressInput {
   display: inline-grid;
-  width: 50%;
+  width: 100%;
 }
 
-#addressLine {
+.addressInput:first-child {
+  padding-right: 4px;
+}
+.addressInput:last-child {
+  padding-left: 4px;
+}
+.addressInput.fullWidth {
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
+.addressLine {
   padding: 4px;
   display: flex;
   flex-direction: row;
-}
-
-#first {
-  padding-right: 8px;
-}
-
-#last {
-  padding-left: 8px;
-}
-
-#street {
-  width: 100%;
-}
-
-#city {
-  width: 100%;
 }
 
 .addressLine4 div {
   width: 33.3%;
 }
 
-#state {
-  padding-right: 8px;
-}
-
-#zip {
-  padding: 0px 8px 0px 8px;
-}
-
-#country {
-  padding-left: 8px;
-}
-
-#customer-form {
+.customer-form {
   width: 100%;
   max-width: 610px;
   margin-bottom: 16px;
 }
 
 @media screen and (max-width: 1076px) {
-  #customer-form {
+  .customer-form {
     align-self: center;
-    max-width: 610px;
-  }
-}
-
-#dropin {
-  width: 100%;
-  max-width: 450px;
-}
-
-@media screen and (max-width: 1076px) {
-  #dropin {
-    width: 100%;
     max-width: 610px;
   }
 }
