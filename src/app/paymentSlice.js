@@ -3,8 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 export const slice = createSlice({
   name: "payment",
   initialState: {
-    valid: false,
-    paid: false,
+    error: "",
     paymentMethodsRes: null,
     paymentRes: null,
     paymentDetailsRes: null,
@@ -35,13 +34,28 @@ export const slice = createSlice({
       };
     },
     paymentMethods: (state, action) => {
-      state.paymentMethodsRes = action.payload;
+      const [res, status] = action.payload;
+      if (status >= 300) {
+        state.error = res;
+      } else {
+        state.paymentMethodsRes = res;
+      }
     },
     payments: (state, action) => {
-      state.paymentRes = action.payload;
+      const [res, status] = action.payload;
+      if (status >= 300) {
+        state.error = res;
+      } else {
+        state.paymentRes = res;
+      }
     },
     paymentDetails: (state, action) => {
-      state.paymentDetailsRes = action.payload;
+      const [res, status] = action.payload;
+      if (status >= 300) {
+        state.error = res;
+      } else {
+        state.paymentDetailsRes = res;
+      }
     }
   }
 });
@@ -57,7 +71,7 @@ export const getPaymentMethods = () => async dispatch => {
   const response = await fetch("/api/paymentMethods", {
     method: "POST"
   });
-  dispatch(paymentMethods(await response.json()));
+  dispatch(paymentMethods([await response.json(), response.status]));
 };
 
 export const initiatePayment = data => async dispatch => {
@@ -68,14 +82,14 @@ export const initiatePayment = data => async dispatch => {
       "Content-Type": "application/json"
     }
   });
-  dispatch(payments(await response.json()));
+  dispatch(payments([await response.json(), response.status]));
 };
 
 export const submitAdditionalDetails = () => async dispatch => {
   const response = await fetch("/api/paymentDetails", {
     method: "POST"
   });
-  dispatch(paymentDetails(await response.json()));
+  dispatch(paymentDetails([await response.json(), response.status]));
 };
 
 export default slice.reducer;

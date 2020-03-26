@@ -31,7 +31,11 @@ class ComponentContainer extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { paymentMethodsRes: paymentMethodsResponse, config, paymentRes } = this.props.payment;
+    const { paymentMethodsRes: paymentMethodsResponse, config, paymentRes, error } = this.props.payment;
+    if (error && error !== prevProps.payment.error) {
+      window.location.href = `/status/error?reason=${error}`;
+      return;
+    }
     if (
       paymentMethodsResponse &&
       config &&
