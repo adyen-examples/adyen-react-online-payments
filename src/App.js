@@ -24,6 +24,11 @@ function App() {
               <h1>Select a demo</h1>
               <p>Click to view an interactive example of a PCI-compliant React UI integration for online payments.</p>
               <p>
+                Make sure the payment method you want to use is enabled for your account. Refer{" "}
+                <a href="https://docs.adyen.com/payment-methods#add-payment-methods-to-your-account">the documentation</a> to add missing
+                payment methods
+              </p>
+              <p>
                 To learn more about client-side integration solutions, check out{" "}
                 <a href="https://docs.adyen.com/checkout">Online payments.</a>
               </p>
@@ -54,6 +59,13 @@ function App() {
                 <Link to="/preview/giropay" className="integration-list-item-link">
                   <div className="title-container">
                     <p className="integration-list-item-title">giropay</p>
+                  </div>
+                </Link>
+              </li>
+              <li className="integration-list-item">
+                <Link to="/preview/dotpay" className="integration-list-item-link">
+                  <div className="title-container">
+                    <p className="integration-list-item-title">Dotpay</p>
                   </div>
                 </Link>
               </li>
