@@ -1,11 +1,12 @@
 import React from "react";
 import { Link, useParams, useLocation } from "react-router-dom";
 
-const Message = ({ type, reason }) => {
+export const Message = ({ type, reason }) => {
   let msg, img;
   switch (type) {
     case "pending":
       msg = <span>Your order has been received! Payment completion pending.</span>;
+      img = "success";
       break;
     case "failed":
       msg = <span>The payment was refused. Please try a different payment method or card.</span>;
@@ -27,8 +28,8 @@ const Message = ({ type, reason }) => {
 
   return (
     <>
-      <img src={`/images/${img}.svg`} className="status-image" alt="" />
-      {["failed", "error"].includes(type) ? null : <img src="/images/thank-you.svg" className="status-image" alt="" />}
+      <img src={`/images/${img}.svg`} className="status-image" alt={img} />
+      {["failed", "error"].includes(type) ? null : <img src="/images/thank-you.svg" className="status-image" alt="thank-you" />}
       <p className="status-message">{msg}</p>
     </>
   );

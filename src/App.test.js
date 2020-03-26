@@ -17,5 +17,5 @@ test("renders Select a demo", () => {
   // @ts-ignore
   expect(getByText(/Drop-in/i)).toBeInTheDocument();
   // @ts-ignore
-  expect(getByText(/Card/i)).toBeInTheDocument();
+  expect(getByText(/Dotpay/i)).toBeInTheDocument();
 });
