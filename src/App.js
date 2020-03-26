@@ -90,6 +90,13 @@ function App() {
                   </div>
                 </Link>
               </li>
+              <li className="integration-list-item">
+                <Link to="/preview/paysafecard" className="integration-list-item-link">
+                  <div className="title-container">
+                    <p className="integration-list-item-title">PaySafe card</p>
+                  </div>
+                </Link>
+              </li>
             </ul>
           </div>
         </Route>

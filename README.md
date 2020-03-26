@@ -17,8 +17,9 @@ This repository includes examples of PCI-compliant React UI integrations for onl
   - EPS
   - SOFORT
   - Bancontact card
+  - Paysafe card
 
-Each demo leverages Adyen's API Library for Node.js ([GitHub](https://github.com/Adyen/adyen-node-api-library) on the server side | [Docs](https://docs.adyen.com/development-resources/libraries#javascript)).
+Each demo leverages Adyen's API Library for Node.js ([GitHub](https://github.com/Adyen/adyen-node-api-library) | [Docs](https://docs.adyen.com/development-resources/libraries#javascript)) on the server side.
 
 ## Requirements
 
