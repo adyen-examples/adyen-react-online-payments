@@ -1,3 +1,5 @@
+/* Index page */
+
 .main-container {
   margin: auto;
   max-width: 1048px;
@@ -10,6 +12,11 @@
   display: flex;
   margin-top: 6%;
   max-width: 1048px;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 @media (min-width: 768px) {
@@ -60,6 +67,9 @@
 .integration-list-item-link {
   padding: 20px;
   width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 @media (min-width: 768px) {
@@ -71,20 +81,10 @@
   }
 }
 
-.integration-list-item-link {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .integration-list-item-title {
   margin: 0;
   text-align: center;
-}
-
-.integration-list-item-title {
   color: #00112c;
-  font-family: "Fakt", sans-serif, Helvetica, Arial;
   font-size: 1em;
   font-weight: 700;
   margin: 10px 0 0;
@@ -101,7 +101,6 @@
 
 .integration-list-item-subtitle {
   color: #00112c;
-  font-family: "Fakt", sans-serif, Helvetica, Arial;
   font-size: 0.67em;
   font-weight: 700;
   margin: 10px 0 0;
@@ -125,25 +124,9 @@
 .info {
   margin-top: 10%;
   color: #00112c;
-  font-family: "Fakt", sans-serif, Helvetica, Arial;
 }
 
-#whole-page {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-#container {
-  margin-top: 100px;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  width: 100%;
-  max-width: 1110px;
-  padding-left: 8px;
-  padding-right: 8px;
-}
+/* end Index page */
 
 /* Cart preview page */
 
@@ -244,44 +227,26 @@
   }
 }
 
-/* Buttons */
+/* end of Cart preview page */
 
-.button {
-  background: #00112c;
-  border: 0;
-  border-radius: 6px;
-  color: #fff;
-  cursor: pointer;
-  display: inline-block;
-  font-size: 1em;
-  font-weight: 500;
-  margin: 0;
-  padding: 15px;
-  text-align: center;
-  transition: background 0.3s ease-out, box-shadow 0.3s ease-out;
+/* Payment page */
+
+#payment-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#payment-page .container {
+  margin-top: 100px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
   width: 100%;
+  max-width: 1110px;
+  padding-left: 8px;
+  padding-right: 8px;
 }
-
-.button:hover {
-  background: #1c3045;
-  box-shadow: 0 3px 4px rgba(0, 15, 45, 0.2);
-}
-
-.button:active {
-  background: #3a4a5c;
-}
-
-.button:disabled {
-  background: #e6e9eb;
-  box-shadow: none;
-  cursor: not-allowed;
-  -webkit-user-select: all;
-  -moz-user-select: all;
-  -ms-user-select: all;
-  user-select: all;
-}
-
-/* Customer billing information form */
 
 .checkout-component {
   background: #f7f8f9;
@@ -299,7 +264,7 @@
 }
 
 @media screen and (max-width: 1076px) {
-  #container {
+  #payment-page .container {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -331,43 +296,7 @@
   }
 }
 
-/* Success page */
-
-.status-container {
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.status {
-  margin: 100px 0 126px;
-  text-align: center;
-}
-
-.status .status-image {
-  display: block;
-  height: 100px;
-  margin: 16px auto 0;
-}
-
-.status .status-image-thank-you {
-  height: 66px;
-}
-
-.status .status-message {
-  margin: 8px 0 24px;
-}
-
-.status .button {
-  max-width: 236px;
-}
-
-@media (min-width: 768px) {
-  .status .button {
-    max-width: 200px;
-  }
-}
+/* end Payments page */
 
 /* Customer billing information form */
 
@@ -451,3 +380,45 @@
     max-width: 610px;
   }
 }
+
+/* end Customer billing information page */
+
+/* Status page */
+
+.status-container {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.status {
+  margin: 100px 0 126px;
+  text-align: center;
+}
+
+.status .status-image {
+  display: block;
+  height: 100px;
+  margin: 16px auto 0;
+}
+
+.status .status-image-thank-you {
+  height: 66px;
+}
+
+.status .status-message {
+  margin: 8px 0 24px;
+}
+
+.status .button {
+  max-width: 236px;
+}
+
+@media (min-width: 768px) {
+  .status .button {
+    max-width: 200px;
+  }
+}
+
+/* end Status page */

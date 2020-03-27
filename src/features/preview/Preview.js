@@ -5,7 +5,7 @@ export function Preview() {
   let { type } = useParams();
 
   return (
-    <main className="whole-preview">
+    <main className="preview-page">
       <section className="cart">
         <h2>Cart</h2>
         <div className="order-summary">

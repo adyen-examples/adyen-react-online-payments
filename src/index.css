@@ -1,4 +1,5 @@
 /* General page body */
+
 html,
 body {
   width: 100%;
@@ -6,8 +7,23 @@ body {
   font-family: "Fakt", sans-serif, Helvetica, Arial;
 }
 
+*,
+:after,
+:before {
+  box-sizing: border-box;
+}
+
+a,
+u {
+  text-decoration: none;
+}
+
 a:hover {
   text-decoration: none;
+}
+
+.hidden {
+  display: none;
 }
 
 #header {
@@ -25,25 +41,41 @@ a:hover {
   box-sizing: border-box;
 }
 
-.hidden {
-  display: none;
-}
+/* Buttons */
 
-*,
-:after,
-:before {
-  box-sizing: border-box;
-}
-
-ul {
-  flex-wrap: wrap;
-  justify-content: space-between;
-  list-style: none;
+.button {
+  background: #00112c;
+  border: 0;
+  border-radius: 6px;
+  color: #fff;
+  cursor: pointer;
+  display: inline-block;
+  font-size: 1em;
+  font-weight: 500;
   margin: 0;
-  padding: 0;
+  padding: 15px;
+  text-align: center;
+  transition: background 0.3s ease-out, box-shadow 0.3s ease-out;
+  width: 100%;
 }
 
-a,
-u {
-  text-decoration: none;
+.button:hover {
+  background: #1c3045;
+  box-shadow: 0 3px 4px rgba(0, 15, 45, 0.2);
 }
+
+.button:active {
+  background: #3a4a5c;
+}
+
+.button:disabled {
+  background: #e6e9eb;
+  box-shadow: none;
+  cursor: not-allowed;
+  -webkit-user-select: all;
+  -moz-user-select: all;
+  -ms-user-select: all;
+  user-select: all;
+}
+
+/* end General page body */
