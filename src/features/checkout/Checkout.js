@@ -40,7 +40,7 @@ class ComponentContainer extends React.Component {
     if (
       paymentMethodsResponse &&
       config &&
-      (paymentMethodsResponse !== prevProps.payment.paymentMethodsRes || (config && config !== prevProps.payment.config))
+      (paymentMethodsResponse !== prevProps.payment.paymentMethodsRes || config !== prevProps.payment.config)
     ) {
       // @ts-ignore
       // eslint-disable-next-line no-undef
