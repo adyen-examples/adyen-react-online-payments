@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-import { Checkout } from "./features/checkout/Checkout";
+import { Payment } from "./features/payment/Payment";
 import { Preview } from "./features/preview/Preview";
 import { Status } from "./features/status/Status";
 import "./App.css";
@@ -13,7 +13,7 @@ function App() {
           <Preview />
         </Route>
         <Route path="/checkout/:type">
-          <Checkout />
+          <Payment />
         </Route>
         <Route path="/status/:type">
           <Status />
@@ -24,9 +24,9 @@ function App() {
               <h1>Select a demo</h1>
               <p>Click to view an interactive example of a PCI-compliant React UI integration for online payments.</p>
               <p>
-                Make sure the payment method you want to use is enabled for your account. Refer{" "}
+                Make sure the payment method you want to use are enabled for your account. Refer{" "}
                 <a href="https://docs.adyen.com/payment-methods#add-payment-methods-to-your-account">the documentation</a> to add missing
-                payment methods
+                payment methods.
               </p>
               <p>
                 To learn more about client-side integration solutions, check out{" "}

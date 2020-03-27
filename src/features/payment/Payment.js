@@ -4,23 +4,24 @@ import { useParams } from "react-router-dom";
 import { CustomerForm } from "../customer/CustomerForm";
 import { getAdyenConfig, getPaymentMethods, initiatePayment, submitAdditionalDetails } from "../../app/paymentSlice";
 
-export function Checkout() {
+export function Payment() {
   const { type } = useParams();
   return (
-    <div id="whole-page">
-      <div id="container">
+    <div id="payment-page">
+      <div className="container">
         <CustomerForm />
-        <ConnectedComponentContainer type={type} />
+        <ConnectedCheckoutContainer type={type} />
       </div>
     </div>
   );
 }
 
-class ComponentContainer extends React.Component {
+class CheckoutContainer extends React.Component {
   constructor(props) {
     super(props);
     this.paymentContainer = React.createRef();
     this.paymentComponent = null;
+
     this.onSubmit = this.onSubmit.bind(this);
     this.onAdditionalDetails = this.onAdditionalDetails.bind(this);
     this.processPaymentResponse = this.processPaymentResponse.bind(this);
@@ -114,4 +115,4 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = { getAdyenConfig, getPaymentMethods, initiatePayment, submitAdditionalDetails };
 
-export const ConnectedComponentContainer = connect(mapStateToProps, mapDispatchToProps)(ComponentContainer);
+export const ConnectedCheckoutContainer = connect(mapStateToProps, mapDispatchToProps)(CheckoutContainer);
