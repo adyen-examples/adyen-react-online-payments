@@ -20,18 +20,18 @@ export function CustomerForm() {
   return (
     <div className="customer-form">
       <div className="address">
-        <div className="billing_header">
-          <div className="billing_header_title">
-            <span className="billing_header_radio">
+        <div className="billing-header">
+          <div className="billing-header-title">
+            <span className="billing-header-radio">
               <input type="checkbox" checked={billingAddress.enableBilling} name="enableBilling" onChange={handleChange} />
             </span>
-            <span className="billing_header_title_name"> Enable Billing Information for 3DS2</span>
+            <span className="billing-header-title-name"> Enable Billing Information for 3DS2</span>
           </div>
         </div>
-        <form className="addressForm" action="/destination" method="get">
-          <div className="addressLine">
-            <div className="addressInput">
-              <label className="addressLabel" htmlFor="firstName">
+        <form className="address-form" action="/destination" method="get">
+          <div className="address-line">
+            <div className="address-input">
+              <label className="address-label" htmlFor="firstName">
                 First Name
               </label>
               <input
@@ -44,8 +44,8 @@ export function CustomerForm() {
                 disabled={!billingAddress.enableBilling}
               />
             </div>
-            <div className="addressInput">
-              <label className="addressLabel" htmlFor="lastName">
+            <div className="address-input">
+              <label className="address-label" htmlFor="lastName">
                 Last Name
               </label>
               <input
@@ -59,9 +59,9 @@ export function CustomerForm() {
               />
             </div>
           </div>
-          <div className="addressLine">
-            <div className="addressInput">
-              <label className="addressLabel" htmlFor="houseNumberOrName">
+          <div className="address-line">
+            <div className="address-input">
+              <label className="address-label" htmlFor="houseNumberOrName">
                 House number
               </label>
               <input
@@ -74,8 +74,8 @@ export function CustomerForm() {
                 disabled={!billingAddress.enableBilling}
               />
             </div>
-            <div className="addressInput">
-              <label className="addressLabel" htmlFor="street">
+            <div className="address-input">
+              <label className="address-label" htmlFor="street">
                 Street
               </label>
               <input
@@ -89,9 +89,9 @@ export function CustomerForm() {
               />
             </div>
           </div>
-          <div className="addressLine">
-            <div className="addressInput fullWidth">
-              <label className="addressLabel" htmlFor="city">
+          <div className="address-line">
+            <div className="address-input full-width">
+              <label className="address-label" htmlFor="city">
                 City
               </label>
               <input
@@ -105,9 +105,9 @@ export function CustomerForm() {
               />
             </div>
           </div>
-          <div className="addressLine">
-            <div className="addressInput">
-              <label className="addressLabel" htmlFor="state">
+          <div className="address-line">
+            <div className="address-input">
+              <label className="address-label" htmlFor="state">
                 State
               </label>
               <input
@@ -120,8 +120,8 @@ export function CustomerForm() {
                 disabled={!billingAddress.enableBilling}
               />
             </div>
-            <div className="addressInput">
-              <label className="addressLabel" htmlFor="zipcode">
+            <div className="address-input">
+              <label className="address-label" htmlFor="zipcode">
                 Zip Code
               </label>
               <input
@@ -134,8 +134,8 @@ export function CustomerForm() {
                 disabled={!billingAddress.enableBilling}
               />
             </div>
-            <div className="addressInput">
-              <label className="addressLabel" htmlFor="country">
+            <div className="address-input">
+              <label className="address-label" htmlFor="country">
                 Country
               </label>
               <input

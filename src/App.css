@@ -322,32 +322,32 @@
   border-radius: 12px;
 }
 
-.billing_header {
+.billing-header {
   padding: 1em 1em 0px 1em;
 }
 
-.addressForm {
+.address-form {
   padding: 1em;
   border-radius: 3px;
 }
 
-.addressForm * {
+.address-form * {
   box-sizing: border-box;
 }
 
-.addressForm input {
+.address-form input {
   border: 1px solid #ccc;
   border-radius: 6px;
   font-size: 0.8em;
   padding: 0.5em;
 }
 
-.addressForm input[type="text"] {
+.address-form input[type="text"] {
   width: 100%;
   height: 40px;
 }
 
-.addressLabel {
+.address-label {
   overflow: hidden;
   text-overflow: ellipsis;
   transition: color 0.1s ease-out;
@@ -358,29 +358,29 @@
   padding-bottom: 5px;
 }
 
-.addressInput {
+.address-input {
   display: inline-grid;
   width: 100%;
 }
 
-.addressInput:first-child {
+.address-input:first-child {
   padding-right: 4px;
 }
-.addressInput:last-child {
+.address-input:last-child {
   padding-left: 4px;
 }
-.addressInput.fullWidth {
+.address-input.full-width {
   padding-left: 0px;
   padding-right: 0px;
 }
 
-.addressLine {
+.address-line {
   padding: 4px;
   display: flex;
   flex-direction: row;
 }
 
-.addressLine4 div {
+.address-line4 div {
   width: 33.3%;
 }
 
