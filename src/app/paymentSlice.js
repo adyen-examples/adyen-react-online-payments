@@ -85,14 +85,14 @@ export const getAdyenConfig = () => async dispatch => {
 };
 
 export const getPaymentMethods = () => async dispatch => {
-  const response = await fetch("/api/paymentMethods", {
+  const response = await fetch("/api/getPaymentMethods", {
     method: "POST"
   });
   dispatch(paymentMethods([await response.json(), response.status]));
 };
 
 export const initiatePayment = data => async dispatch => {
-  const response = await fetch("/api/payments", {
+  const response = await fetch("/api/initiatePayment", {
     method: "POST",
     body: JSON.stringify(data),
     headers: {
@@ -103,7 +103,7 @@ export const initiatePayment = data => async dispatch => {
 };
 
 export const submitAdditionalDetails = data => async dispatch => {
-  const response = await fetch("/api/paymentDetails", {
+  const response = await fetch("/api/submitAdditionalDetails", {
     method: "POST",
     body: JSON.stringify(data),
     headers: {

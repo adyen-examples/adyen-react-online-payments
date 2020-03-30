@@ -80,7 +80,7 @@ app.get("/api/config", (req, res) => {
 });
 
 // Get payment methods
-app.post("/api/paymentMethods", async (req, res) => {
+app.post("/api/getPaymentMethods", async (req, res) => {
   try {
     const response = await checkout.paymentMethods({
       channel: "Web",
@@ -94,7 +94,7 @@ app.post("/api/paymentMethods", async (req, res) => {
 });
 
 // Submitting a payment
-app.post("/api/payments", async (req, res) => {
+app.post("/api/initiatePayment", async (req, res) => {
   const currency = findCurrency(req.body.paymentMethod.type);
   const shopperIP = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
 
@@ -136,7 +136,7 @@ app.post("/api/payments", async (req, res) => {
   }
 });
 
-app.post("/api/paymentDetails", async (req, res) => {
+app.post("/api/submitAdditionalDetails", async (req, res) => {
   // Create the payload for submitting payment details
   const payload = {};
   payload["details"] = req.body.details;
