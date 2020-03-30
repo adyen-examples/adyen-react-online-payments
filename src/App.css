@@ -298,6 +298,22 @@
 
 /* end Payments page */
 
+/* Dropin page */
+
+#dropin {
+  width: 100%;
+  max-width: 450px;
+}
+
+@media screen and (max-width: 1076px) {
+  #dropin {
+    width: 100%;
+    max-width: 610px;
+  }
+}
+
+/* end Dropin page */
+
 /* Customer billing information form */
 
 .address {
