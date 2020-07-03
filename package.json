@@ -13,7 +13,8 @@
     "react-dom": "^16.13.1",
     "react-redux": "^7.1.3",
     "react-router": "^5.1.2",
-    "react-router-dom": "^5.1.2"
+    "react-router-dom": "^5.1.2",
+    "uuidv4": "^6.1.1"
   },
   "scripts": {
     "start": "react-scripts start",

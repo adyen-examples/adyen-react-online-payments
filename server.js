@@ -1,8 +1,8 @@
 const express = require("express");
 const path = require("path");
-const cookieParser = require("cookie-parser");
 const dotenv = require("dotenv");
 const morgan = require("morgan");
+const { uuid } = require("uuidv4");
 const { Client, Config, CheckoutAPI } = require("@adyen/api-library");
 const app = express();
 
@@ -12,15 +12,18 @@ app.use(morgan("dev"));
 app.use(express.json());
 // Parse URL-encoded bodies
 app.use(express.urlencoded({ extended: true }));
-// Parse cookie bodies, and allow setting/getting cookies
-app.use(cookieParser());
 // Serve client from build folder
 app.use(express.static(path.join(__dirname, "build")));
+
+// A temporary store to keep payment data to be sent in additional payment details and redirects.
+// This is more secure than a cookie. In a real application this should be in a database.
+const paymentDataStore = {};
+const originStore = {};
 
 // enables environment variables by
 // parsing the .env file and assigning it to process.env
 dotenv.config({
-  path: "./.env"
+  path: "./.env",
 });
 
 // Adyen Node.js API library boilerplate (configuration, etc.)
@@ -42,13 +45,14 @@ app.all("/api/handleShopperRedirect", async (req, res) => {
   // Create the payload for submitting payment details
   const payload = {};
   payload["details"] = req.method === "GET" ? req.query : req.body;
-  payload["paymentData"] = req.cookies["paymentData"];
-  const originalHost = req.cookies["originalHost"] || "";
+  const orderRef = req.query.orderRef;
+  payload["paymentData"] = paymentDataStore[orderRef];
+  delete paymentDataStore[orderRef];
+  const originalHost = originStore[orderRef] || "";
+  delete originStore[orderRef];
 
   try {
     const response = await checkout.paymentsDetails(payload);
-    res.clearCookie("paymentData");
-    res.clearCookie("originalHost");
     // Conditionally handle different result codes for the shopper
     switch (response.resultCode) {
       case "Authorised":
@@ -75,7 +79,7 @@ app.all("/api/handleShopperRedirect", async (req, res) => {
 app.get("/api/config", (req, res) => {
   res.json({
     environment: "test",
-    originKey: process.env.ORIGIN_KEY
+    originKey: process.env.ORIGIN_KEY,
   });
 });
 
@@ -84,7 +88,7 @@ app.post("/api/getPaymentMethods", async (req, res) => {
   try {
     const response = await checkout.paymentMethods({
       channel: "Web",
-      merchantAccount: process.env.MERCHANT_ACCOUNT
+      merchantAccount: process.env.MERCHANT_ACCOUNT,
     });
     res.json(response);
   } catch (err) {
@@ -99,23 +103,24 @@ app.post("/api/initiatePayment", async (req, res) => {
   const shopperIP = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
 
   try {
+    const orderRef = uuid();
     // Ideally the data passed here should be computed based on business logic
     const response = await checkout.payments({
       amount: { currency, value: 1000 }, // value is 10€ in minor units
-      reference: `${Date.now()}`,
+      reference: orderRef,
       merchantAccount: process.env.MERCHANT_ACCOUNT,
       // @ts-ignore
       shopperIP,
       channel: "Web",
       additionalData: {
         // @ts-ignore
-        allow3DS2: true
+        allow3DS2: true,
       },
-      returnUrl: "http://localhost:8080/api/handleShopperRedirect",
+      returnUrl: `http://localhost:8080/api/handleShopperRedirect?orderRef=${orderRef}`,
       browserInfo: req.body.browserInfo,
       paymentMethod: req.body.paymentMethod,
       billingAddress: req.body.billingAddress,
-      origin: req.body.origin
+      origin: req.body.origin,
     });
     let paymentMethodType = req.body.paymentMethod.type;
     let resultCode = response.resultCode;
@@ -124,11 +129,12 @@ app.post("/api/initiatePayment", async (req, res) => {
 
     if (response.action) {
       action = response.action;
-      res.cookie("paymentData", action.paymentData, { maxAge: 900000, httpOnly: true });
+      paymentDataStore[orderRef] = action.paymentData;
       const originalHost = new URL(req.headers["referer"]);
-      originalHost && res.cookie("originalHost", originalHost.origin, { maxAge: 900000, httpOnly: true });
+      if (originalHost) {
+        originStore[orderRef] = originalHost.origin;
+      }
     }
-
     res.json({ paymentMethodType, resultCode, redirectUrl, action });
   } catch (err) {
     console.error(`Error: ${err.message}, error code: ${err.errorCode}`);
