@@ -79,7 +79,7 @@ app.all("/api/handleShopperRedirect", async (req, res) => {
 app.get("/api/config", (req, res) => {
   res.json({
     environment: "test",
-    originKey: process.env.ORIGIN_KEY,
+    clientKey: process.env.CLIENT_KEY,
   });
 });
 
