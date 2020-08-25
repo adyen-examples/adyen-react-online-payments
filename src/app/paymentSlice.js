@@ -10,7 +10,7 @@ export const slice = createSlice({
     config: {
       paymentMethodsConfiguration: {
         ideal: {
-          showImage: true
+          showImage: true,
         },
         card: {
           hasHolderName: true,
@@ -18,12 +18,12 @@ export const slice = createSlice({
           name: "Credit or debit card",
           amount: {
             value: 1000, // 10€ in minor units
-            currency: "EUR"
-          }
-        }
+            currency: "EUR",
+          },
+        },
       },
       locale: "en_NL",
-      showPayButton: true
+      showPayButton: true,
     },
     billingAddress: {
       enableBilling: false,
@@ -34,20 +34,20 @@ export const slice = createSlice({
       city: "San Francisco",
       stateOrProvince: "California",
       postalCode: "94107",
-      country: "US"
-    }
+      country: "US",
+    },
   },
   reducers: {
     setBilling: (state, action) => {
       state.billingAddress = {
         ...state.billingAddress,
-        ...action.payload
+        ...action.payload,
       };
     },
     config: (state, action) => {
       state.config = {
         ...state.config,
-        ...action.payload
+        ...action.payload,
       };
     },
     paymentMethods: (state, action) => {
@@ -55,6 +55,9 @@ export const slice = createSlice({
       if (status >= 300) {
         state.error = res;
       } else {
+        res.paymentMethods = res.paymentMethods.filter((it) =>
+          ["eps", "scheme", "dotpay", "giropay", "ideal", "directEbanking", "bcmc", "paysafecard"].includes(it.type)
+        );
         state.paymentMethodsRes = res;
       }
     },
@@ -73,42 +76,42 @@ export const slice = createSlice({
       } else {
         state.paymentDetailsRes = res;
       }
-    }
-  }
+    },
+  },
 });
 
 export const { setBilling, config, paymentMethods, payments, paymentDetails } = slice.actions;
 
-export const getAdyenConfig = () => async dispatch => {
+export const getAdyenConfig = () => async (dispatch) => {
   const response = await fetch("/api/config");
   dispatch(config(await response.json()));
 };
 
-export const getPaymentMethods = () => async dispatch => {
+export const getPaymentMethods = () => async (dispatch) => {
   const response = await fetch("/api/getPaymentMethods", {
-    method: "POST"
+    method: "POST",
   });
   dispatch(paymentMethods([await response.json(), response.status]));
 };
 
-export const initiatePayment = data => async dispatch => {
+export const initiatePayment = (data) => async (dispatch) => {
   const response = await fetch("/api/initiatePayment", {
     method: "POST",
     body: JSON.stringify(data),
     headers: {
-      "Content-Type": "application/json"
-    }
+      "Content-Type": "application/json",
+    },
   });
   dispatch(payments([await response.json(), response.status]));
 };
 
-export const submitAdditionalDetails = data => async dispatch => {
+export const submitAdditionalDetails = (data) => async (dispatch) => {
   const response = await fetch("/api/submitAdditionalDetails", {
     method: "POST",
     body: JSON.stringify(data),
     headers: {
-      "Content-Type": "application/json"
-    }
+      "Content-Type": "application/json",
+    },
   });
   dispatch(paymentDetails([await response.json(), response.status]));
 };
