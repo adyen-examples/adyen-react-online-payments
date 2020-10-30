@@ -22,34 +22,13 @@ export const slice = createSlice({
           },
         },
       },
-      locale: "en_NL",
+      locale: "en_US",
       showPayButton: true,
-    },
-    billingAddress: {
-      enableBilling: false,
-      firstName: "Joe",
-      lastName: "Bob",
-      houseNumberOrName: "274",
-      street: "Brannan Street",
-      city: "San Francisco",
-      stateOrProvince: "California",
-      postalCode: "94107",
-      country: "US",
+      clientKey: process.env.REACT_APP_CLIENT_KEY,
+      environment: "test",
     },
   },
   reducers: {
-    setBilling: (state, action) => {
-      state.billingAddress = {
-        ...state.billingAddress,
-        ...action.payload,
-      };
-    },
-    config: (state, action) => {
-      state.config = {
-        ...state.config,
-        ...action.payload,
-      };
-    },
     paymentMethods: (state, action) => {
       const [res, status] = action.payload;
       if (status >= 300) {
@@ -80,12 +59,7 @@ export const slice = createSlice({
   },
 });
 
-export const { setBilling, config, paymentMethods, payments, paymentDetails } = slice.actions;
-
-export const getAdyenConfig = () => async (dispatch) => {
-  const response = await fetch("/api/config");
-  dispatch(config(await response.json()));
-};
+export const { paymentMethods, payments, paymentDetails } = slice.actions;
 
 export const getPaymentMethods = () => async (dispatch) => {
   const response = await fetch("/api/getPaymentMethods", {

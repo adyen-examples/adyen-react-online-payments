@@ -1,15 +1,15 @@
 import React from "react";
 import { connect } from "react-redux";
 import { useParams } from "react-router-dom";
-import { CustomerForm } from "../customer/CustomerForm";
-import { getAdyenConfig, getPaymentMethods, initiatePayment, submitAdditionalDetails } from "../../app/paymentSlice";
+import AdyenCheckout from "@adyen/adyen-web";
+import "@adyen/adyen-web/dist/adyen.css";
+import { getPaymentMethods, initiatePayment, submitAdditionalDetails } from "../../app/paymentSlice";
 
 export function Payment() {
   const { type } = useParams();
   return (
     <div id="payment-page">
       <div className="container">
-        <CustomerForm />
         <ConnectedCheckoutContainer type={type} />
       </div>
     </div>
@@ -28,7 +28,6 @@ class CheckoutContainer extends React.Component {
   }
 
   componentDidMount() {
-    this.props.getAdyenConfig();
     this.props.getPaymentMethods();
   }
 
@@ -49,7 +48,7 @@ class CheckoutContainer extends React.Component {
         ...config,
         paymentMethodsResponse,
         onAdditionalDetails: this.onAdditionalDetails,
-        onSubmit: this.onSubmit
+        onSubmit: this.onSubmit,
       });
 
       this.checkout.create(this.props.type).mount(this.paymentContainer.current);
@@ -71,6 +70,7 @@ class CheckoutContainer extends React.Component {
           window.location.href = "/status/success";
           break;
         case "Pending":
+        case "Received":
           window.location.href = "/status/pending";
           break;
         case "Refused":
@@ -84,12 +84,10 @@ class CheckoutContainer extends React.Component {
   }
 
   onSubmit(state, component) {
-    const { billingAddress } = this.props.payment;
     if (state.isValid) {
       this.props.initiatePayment({
         ...state.data,
-        billingAddress: this.props.type === "card" && billingAddress.enableBilling ? billingAddress : null,
-        origin: window.location.origin
+        origin: window.location.origin,
       });
       this.paymentComponent = component;
     }
@@ -109,10 +107,10 @@ class CheckoutContainer extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({
-  payment: state.payment
+const mapStateToProps = (state) => ({
+  payment: state.payment,
 });
 
-const mapDispatchToProps = { getAdyenConfig, getPaymentMethods, initiatePayment, submitAdditionalDetails };
+const mapDispatchToProps = { getPaymentMethods, initiatePayment, submitAdditionalDetails };
 
 export const ConnectedCheckoutContainer = connect(mapStateToProps, mapDispatchToProps)(CheckoutContainer);

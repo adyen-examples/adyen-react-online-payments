@@ -46,7 +46,7 @@ npm install
 ```
 API_KEY="your_API_key_here"
 MERCHANT_ACCOUNT="your_merchant_account_here"
-CLIENT_KEY="your_client_key_here"
+REACT_APP_CLIENT_KEY="your_client_key_here"
 ```
 
 2. Build & Start the server:
