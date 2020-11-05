@@ -288,13 +288,6 @@
   height: 100%;
 }
 
-@media screen and (max-width: 1076px) {
-  .payment-container {
-    align-self: center;
-    max-width: 610px;
-  }
-}
-
 /* end Payments page */
 
 /* Dropin page */
