@@ -62,19 +62,20 @@ app.post("/api/initiatePayment", async (req, res) => {
     // Ideally the data passed here should be computed based on business logic
     const response = await checkout.payments({
       amount: { currency, value: 1000 }, // value is 10€ in minor units
-      reference: orderRef,
-      merchantAccount: process.env.MERCHANT_ACCOUNT,
-      shopperIP,
-      channel: "Web",
+      reference: orderRef, // required
+      merchantAccount: process.env.MERCHANT_ACCOUNT, // required
+      channel: "Web", // required
       additionalData: {
+        // required for 3ds2 native flow
         allow3DS2: true,
       },
+      origin: "http://localhost:8080", // required for 3ds2 native flow
+      browserInfo: req.body.browserInfo, // required for 3ds2
+      shopperIP, // required by some issuers for 3ds2
       // we pass the orderRef in return URL to get paymentData during redirects
-      returnUrl: `http://localhost:8080/api/handleShopperRedirect?orderRef=${orderRef}`,
-      browserInfo: req.body.browserInfo,
+      returnUrl: `http://localhost:8080/api/handleShopperRedirect?orderRef=${orderRef}`, // required for 3ds2 redirect flow
       paymentMethod: req.body.paymentMethod,
       billingAddress: req.body.billingAddress,
-      origin: req.body.origin,
     });
 
     const { action } = response;
