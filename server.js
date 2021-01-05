@@ -69,7 +69,7 @@ app.post("/api/initiatePayment", async (req, res) => {
         // required for 3ds2 native flow
         allow3DS2: true,
       },
-      origin: "http://localhost:8080", // required for 3ds2 native flow
+      origin: "http://localhost:3000", // required for 3ds2 native flow
       browserInfo: req.body.browserInfo, // required for 3ds2
       shopperIP, // required by some issuers for 3ds2
       // we pass the orderRef in return URL to get paymentData during redirects
