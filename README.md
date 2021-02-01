@@ -18,6 +18,8 @@ This repository includes examples of PCI-compliant React UI integrations for onl
   - SOFORT
   - Bancontact card
   - Paysafe card
+- Cancellation and Refunds
+- Webhook notifications for cancellation
 
 Each demo leverages Adyen's API Library for Node.js ([GitHub](https://github.com/Adyen/adyen-node-api-library) | [Docs](https://docs.adyen.com/development-resources/libraries#javascript)) on the server side.
 
