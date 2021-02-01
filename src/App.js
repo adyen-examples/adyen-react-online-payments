@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import { Payment } from "./features/payment/Payment";
 import { Preview } from "./features/preview/Preview";
 import { Status } from "./features/status/Status";
+import { Cancel } from "./features/cancel/Cancel";
 import "./App.css";
 
 function App() {
@@ -17,6 +18,9 @@ function App() {
         </Route>
         <Route path="/status/:type">
           <Status />
+        </Route>
+        <Route path="/cancel">
+          <Cancel />
         </Route>
         <Route path="/">
           <div className="main-container">
@@ -98,6 +102,11 @@ function App() {
                 </Link>
               </li>
             </ul>
+            <div className="mt-5">
+              <Link to="/cancel" className="button text-light">
+                Cancel and Refund a payment
+              </Link>
+            </div>
           </div>
         </Route>
       </Switch>

@@ -47,6 +47,7 @@ npm install
 API_KEY="your_API_key_here"
 MERCHANT_ACCOUNT="your_merchant_account_here"
 REACT_APP_CLIENT_KEY="your_client_key_here"
+ADYEN_HMAC_KEY=yourNotificationSetupHMACkey
 ```
 
 2. Build & Start the server:
@@ -60,6 +61,18 @@ npm run server
 3. Visit [http://localhost:8080/](http://localhost:8080/) to select an integration type.
 
 To try out integrations with test card numbers and payment method details, see [Test card numbers](https://docs.adyen.com/development-resources/test-cards/test-card-numbers).
+
+**Note**
+
+Cancellation/Refund flow makes use of [Adyen webhook notifications](https://docs.adyen.com/development-resources/webhooks). You can use a service like [ngrok](https://ngrok.com) to configure two Adyen webhooks with below details for test
+
+- Notification types: Standard Notification
+- URL: https://[tempdomain].ngrok.io/api/webhook/notification
+- Method: JSON
+- Username: anything
+- Password: anything
+
+This example doesn't authenticate the webhook, in actual practice you should protect the endpoint with basic authentication and set the same credentials on notification setting above.
 
 ## Contributing
 

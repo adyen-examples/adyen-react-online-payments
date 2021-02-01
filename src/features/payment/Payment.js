@@ -54,7 +54,7 @@ class CheckoutContainer extends React.Component {
       this.checkout.create(this.props.type).mount(this.paymentContainer.current);
     }
     if (paymentRes && paymentRes !== prevProps.payment.paymentRes) {
-      this.processPaymentResponse(paymentRes);
+      this.processPaymentResponse(paymentRes[0]); // get only response from tuple
     }
     if (paymentRes && paymentDetailsRes !== prevProps.payment.paymentDetailsRes) {
       this.processPaymentResponse(paymentDetailsRes);
@@ -94,7 +94,9 @@ class CheckoutContainer extends React.Component {
   }
 
   onAdditionalDetails(state, component) {
-    this.props.submitAdditionalDetails(state.data);
+    const { paymentRes } = this.props.payment;
+
+    this.props.submitAdditionalDetails(state.data, paymentRes[1]); // get orderRef from response
     this.paymentComponent = component;
   }
 
