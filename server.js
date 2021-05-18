@@ -30,9 +30,6 @@ const checkout = new CheckoutAPI(client);
 const modification = new Modification(client);
 const validator = new hmacValidator();
 
-// A temporary store to keep payment data to be sent in additional payment details and redirects.
-// This is more secure than a cookie. In a real application this should be in a database.
-const paymentDataStore = {};
 // in memory store for transaction
 const paymentStore = {};
 const originStore = {};
@@ -76,7 +73,6 @@ app.post("/api/initiatePayment", async (req, res) => {
       origin: "http://localhost:8080", // required for 3ds2 native flow
       browserInfo: req.body.browserInfo, // required for 3ds2
       shopperIP, // required by some issuers for 3ds2
-      // we pass the orderRef in return URL to get paymentData during redirects
       returnUrl: `http://localhost:8080/api/handleShopperRedirect?orderRef=${orderRef}`, // required for 3ds2 redirect flow
       paymentMethod: req.body.paymentMethod,
       billingAddress: req.body.billingAddress,
@@ -84,13 +80,13 @@ app.post("/api/initiatePayment", async (req, res) => {
 
     const { action } = response;
 
+    // save transaction in memory
     paymentStore[orderRef] = {
       amount: { currency, value: 1000 },
       reference: orderRef,
     };
 
     if (action) {
-      paymentDataStore[orderRef] = action.paymentData;
       const originalHost = new URL(req.headers["referer"]);
       if (originalHost) {
         originStore[orderRef] = originalHost.origin;
@@ -135,22 +131,16 @@ app.all("/api/handleShopperRedirect", async (req, res) => {
   const orderRef = req.query.orderRef;
   const redirect = req.method === "GET" ? req.query : req.body;
   const details = {};
-  if (redirect.payload) {
-    details.payload = redirect.payload;
-  } else if (redirect.redirectResult) {
+  if (redirect.redirectResult) {
     details.redirectResult = redirect.redirectResult;
-  } else {
-    details.MD = redirect.MD;
-    details.PaRes = redirect.PaRes;
+  } else if (redirect.payload) {
+    details.payload = redirect.payload;
   }
+
   const originalHost = originStore[orderRef] || "";
-  const payload = {
-    details,
-    paymentData: paymentDataStore[orderRef],
-  };
 
   try {
-    const response = await checkout.paymentsDetails(payload);
+    const response = await checkout.paymentsDetails({ details });
     if (response.resultCode) {
       paymentStore[orderRef].paymentRef = response.pspReference;
       paymentStore[req.query.orderRef].status = response.resultCode;

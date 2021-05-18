@@ -11,8 +11,6 @@ export function Cancel() {
 
   const paymentDataStore = useSelector((state) => state.payment.paymentDataStoreRes);
 
-  console.log(paymentDataStore);
-
   return (
     <main className="preview-page">
       <section className="cart">
