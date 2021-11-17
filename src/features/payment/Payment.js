@@ -51,7 +51,7 @@ class CheckoutContainer extends React.Component {
         onSubmit: this.onSubmit,
       });
 
-      this.checkout.create(this.props.type).mount(this.paymentContainer.current);
+      this.checkout.then(checkout => { checkout.create(this.props.type).mount(this.paymentContainer.current);});
     }
     if (paymentRes && paymentRes !== prevProps.payment.paymentRes) {
       this.processPaymentResponse(paymentRes[0]); // get only response from tuple
