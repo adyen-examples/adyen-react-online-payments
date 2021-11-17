@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { useParams } from "react-router-dom";
 import AdyenCheckout from "@adyen/adyen-web";
 import "@adyen/adyen-web/dist/adyen.css";
-import { getPaymentMethods, initiatePayment, submitAdditionalDetails } from "../../app/paymentSlice";
+import { initiatePayment, submitAdditionalDetails, initiateCheckout } from "../../app/paymentSlice";
 
 export function Payment() {
   const { type } = useParams();
@@ -22,43 +22,53 @@ class CheckoutContainer extends React.Component {
     this.paymentContainer = React.createRef();
     this.paymentComponent = null;
 
-    this.onSubmit = this.onSubmit.bind(this);
-    this.onAdditionalDetails = this.onAdditionalDetails.bind(this);
+    // this.onSubmit = this.onSubmit.bind(this);
+    // this.onAdditionalDetails = this.onAdditionalDetails.bind(this);
     this.processPaymentResponse = this.processPaymentResponse.bind(this);
   }
 
   componentDidMount() {
-    this.props.getPaymentMethods();
+    this.props.initiateCheckout();
   }
 
   componentDidUpdate(prevProps) {
-    const { paymentMethodsRes: paymentMethodsResponse, config, paymentRes, paymentDetailsRes, error } = this.props.payment;
+    const { sessionAndOrderRef, config, paymentRes, paymentDetailsRes, error } = this.props.payment;
     if (error && error !== prevProps.payment.error) {
       window.location.href = `/status/error?reason=${error}`;
       return;
     }
-    if (
-      paymentMethodsResponse &&
-      config &&
-      (paymentMethodsResponse !== prevProps.payment.paymentMethodsRes || config !== prevProps.payment.config)
-    ) {
-      // @ts-ignore
-      // eslint-disable-next-line no-undef
-      this.checkout = new AdyenCheckout({
-        ...config,
-        paymentMethodsResponse,
-        onAdditionalDetails: this.onAdditionalDetails,
-        onSubmit: this.onSubmit,
-      });
 
-      this.checkout.then(checkout => { checkout.create(this.props.type).mount(this.paymentContainer.current);});
+    console.log("here");
+    console.log(sessionAndOrderRef);
+    console.log("----------");
+
+    console.log(config);
+    console.log("----------");
+    console.log(prevProps.payment.config);
+
+    const configWithSession = {...config}
+    configWithSession.session = sessionAndOrderRef[0];
+
+    const payload = {
+      ...configWithSession,
+      onPaymentCompleted : ((res, comp) => {console.log("payment completed " + res)}),
+      onError : ((err, comp) => {console.log("payment error " + err)}),
+      // onAdditionalDetails: this.onAdditionalDetails,
+      // onSubmit: this.onSubmit,
     }
-    if (paymentRes && paymentRes !== prevProps.payment.paymentRes) {
-      this.processPaymentResponse(paymentRes[0]); // get only response from tuple
-    }
-    if (paymentRes && paymentDetailsRes !== prevProps.payment.paymentDetailsRes) {
-      this.processPaymentResponse(paymentDetailsRes);
-    }
+
+    console.log("configWithSession", configWithSession);
+    // @ts-ignore
+    // eslint-disable-next-line no-undef
+    this.checkout = new AdyenCheckout(payload);
+
+    this.checkout.then(checkout => { checkout.create(this.props.type).mount(this.paymentContainer.current);});
+  // if (paymentRes && paymentRes !== prevProps.payment.paymentRes) {
+  //   this.processPaymentResponse(paymentRes[0]); // get only response from tuple
+  // }
+  // if (paymentRes && paymentDetailsRes !== prevProps.payment.paymentDetailsRes) {
+  //   this.processPaymentResponse(paymentDetailsRes);
+  // }
   }
 
   processPaymentResponse(paymentRes) {
@@ -83,7 +93,7 @@ class CheckoutContainer extends React.Component {
     }
   }
 
-  onSubmit(state, component) {
+  onPa(state, component) {
     if (state.isValid) {
       this.props.initiatePayment({
         ...state.data,
@@ -93,12 +103,22 @@ class CheckoutContainer extends React.Component {
     }
   }
 
-  onAdditionalDetails(state, component) {
-    const { paymentRes } = this.props.payment;
+  // onSubmit(state, component) {
+  //   if (state.isValid) {
+  //     this.props.initiatePayment({
+  //       ...state.data,
+  //       origin: window.location.origin,
+  //     });
+  //     this.paymentComponent = component;
+  //   }
+  // }
 
-    this.props.submitAdditionalDetails(state.data, paymentRes[1]); // get orderRef from response
-    this.paymentComponent = component;
-  }
+  // onAdditionalDetails(state, component) {
+  //   const { paymentRes } = this.props.payment;
+
+  //   this.props.submitAdditionalDetails(state.data, paymentRes[1]); // get orderRef from response
+  //   this.paymentComponent = component;
+  // }
 
   render() {
     return (
@@ -113,6 +133,6 @@ const mapStateToProps = (state) => ({
   payment: state.payment,
 });
 
-const mapDispatchToProps = { getPaymentMethods, initiatePayment, submitAdditionalDetails };
+const mapDispatchToProps = { initiatePayment, submitAdditionalDetails, initiateCheckout };
 
 export const ConnectedCheckoutContainer = connect(mapStateToProps, mapDispatchToProps)(CheckoutContainer);

@@ -4,7 +4,7 @@ export const slice = createSlice({
   name: "payment",
   initialState: {
     error: "",
-    paymentMethodsRes: null,
+    sessionAndOrderRef: null,
     paymentRes: null,
     paymentDetailsRes: null,
     paymentDataStoreRes: null,
@@ -30,15 +30,12 @@ export const slice = createSlice({
     },
   },
   reducers: {
-    paymentMethods: (state, action) => {
+    paymentSession: (state, action) => {
       const [res, status] = action.payload;
       if (status >= 300) {
         state.error = res;
       } else {
-        res.paymentMethods = res.paymentMethods.filter((it) =>
-          ["eps", "scheme", "dotpay", "giropay", "ideal", "directEbanking", "bcmc", "paysafecard"].includes(it.type)
-        );
-        state.paymentMethodsRes = res;
+        state.sessionAndOrderRef = res;
       }
     },
     payments: (state, action) => {
@@ -68,13 +65,16 @@ export const slice = createSlice({
   },
 });
 
-export const { paymentMethods, payments, paymentDetails, paymentDataStore } = slice.actions;
+export const { payments, paymentSession, paymentDetails, paymentDataStore } = slice.actions;
 
-export const getPaymentMethods = () => async (dispatch) => {
-  const response = await fetch("/api/getPaymentMethods", {
+export const initiateCheckout = () => async (dispatch) => {
+  const response = await fetch("/api/sessions", {
     method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
   });
-  dispatch(paymentMethods([await response.json(), response.status]));
+  dispatch(paymentSession([await response.json(), response.status]));
 };
 
 export const initiatePayment = (data) => async (dispatch) => {
