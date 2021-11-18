@@ -5,8 +5,6 @@ export const slice = createSlice({
   initialState: {
     error: "",
     sessionAndOrderRef: null,
-    paymentRes: null,
-    paymentDetailsRes: null,
     paymentDataStoreRes: null,
     config: {
       paymentMethodsConfiguration: {
@@ -38,22 +36,6 @@ export const slice = createSlice({
         state.sessionAndOrderRef = res;
       }
     },
-    payments: (state, action) => {
-      const [res, status] = action.payload;
-      if (status >= 300) {
-        state.error = res;
-      } else {
-        state.paymentRes = res;
-      }
-    },
-    paymentDetails: (state, action) => {
-      const [res, status] = action.payload;
-      if (status >= 300) {
-        state.error = res;
-      } else {
-        state.paymentDetailsRes = res;
-      }
-    },
     paymentDataStore: (state, action) => {
       const [res, status] = action.payload;
       if (status >= 300) {
@@ -65,7 +47,7 @@ export const slice = createSlice({
   },
 });
 
-export const { payments, paymentSession, paymentDetails, paymentDataStore } = slice.actions;
+export const { paymentSession, paymentDataStore } = slice.actions;
 
 export const initiateCheckout = () => async (dispatch) => {
   const response = await fetch("/api/sessions", {
@@ -75,28 +57,6 @@ export const initiateCheckout = () => async (dispatch) => {
     },
   });
   dispatch(paymentSession([await response.json(), response.status]));
-};
-
-export const initiatePayment = (data) => async (dispatch) => {
-  const response = await fetch("/api/initiatePayment", {
-    method: "POST",
-    body: JSON.stringify(data),
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-  dispatch(payments([await response.json(), response.status]));
-};
-
-export const submitAdditionalDetails = (data, orderRef) => async (dispatch) => {
-  const response = await fetch(`/api/submitAdditionalDetails?orderRef=${orderRef}`, {
-    method: "POST",
-    body: JSON.stringify(data),
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-  dispatch(paymentDetails([await response.json(), response.status]));
 };
 
 export const getPaymentDataStore = () => async (dispatch) => {
