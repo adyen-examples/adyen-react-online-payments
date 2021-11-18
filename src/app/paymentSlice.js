@@ -7,6 +7,7 @@ export const slice = createSlice({
     sessionAndOrderRef: null,
     paymentDataStoreRes: null,
     config: {
+      storePaymentMethod: true,
       paymentMethodsConfiguration: {
         ideal: {
           showImage: true,

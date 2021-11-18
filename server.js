@@ -39,7 +39,6 @@ app.get("/api/getPaymentDataStore", async (req, res) => res.json(paymentStore));
 
 // Submitting a payment
 app.post("/api/sessions", async (req, res) => {
-  const checkoutType = req.query.type // checkout type is used to redirect to the component for 3ds2 redirect flows
 
   try {
     // unique ref for the transaction
