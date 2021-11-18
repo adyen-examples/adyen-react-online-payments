@@ -25,7 +25,7 @@ class CheckoutContainer extends React.Component {
   }
 
   componentDidMount() {
-    this.props.initiateCheckout();
+    this.props.initiateCheckout(this.props.type);
   }
 
   componentDidUpdate(prevProps) {
@@ -43,12 +43,11 @@ class CheckoutContainer extends React.Component {
       onPaymentCompleted : ((res, comp) => {console.log("payment completed " + res); this.processPaymentResponse(res);}),
       onError : ((err, comp) => {console.log("payment error " + err); ; this.processPaymentResponse(err);}),
     };
-    
+
     // @ts-ignore
     // eslint-disable-next-line no-undef
-    this.checkout = new AdyenCheckout(payload);
-
-    this.checkout.then(checkout => { checkout.create(this.props.type).mount(this.paymentContainer.current);});
+    this.checkout = new AdyenCheckout(payload)
+      .then(checkout => { checkout.create(this.props.type).mount(this.paymentContainer.current);});
   }
 
   processPaymentResponse(paymentRes) {

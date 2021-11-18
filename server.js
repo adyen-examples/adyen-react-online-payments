@@ -39,6 +39,8 @@ app.get("/api/getPaymentDataStore", async (req, res) => res.json(paymentStore));
 
 // Submitting a payment
 app.post("/api/sessions", async (req, res) => {
+  const checkoutType = req.query.type // checkout type is used to redirect to the component for 3ds2 redirect flows
+
   try {
     // unique ref for the transaction
     const orderRef = uuid();
@@ -48,7 +50,7 @@ app.post("/api/sessions", async (req, res) => {
       reference: orderRef, // required
       merchantAccount: process.env.MERCHANT_ACCOUNT, // required
       channel: "Web", // required
-      returnUrl: `http://localhost:8080/api/handleShopperRedirect?orderRef=${orderRef}`, // required for 3ds2 redirect flow
+      returnUrl: `http://localhost:8080/redirect?orderRef=${orderRef}`, // required for 3ds2 redirect flow
     });
 
     // save transaction in memory
@@ -57,7 +59,7 @@ app.post("/api/sessions", async (req, res) => {
       reference: orderRef,
     };
 
-    res.json([response, orderRef]); // sending a tuple with orderRef as well to be used in in submitAdditionalDetails if needed
+    res.json([response, orderRef]); // sending a tuple with orderRef as well to inform about the unique order reference
   } catch (err) {
     console.error(`Error: ${err.message}, error code: ${err.errorCode}`);
     res.status(err.statusCode).json(err.message);

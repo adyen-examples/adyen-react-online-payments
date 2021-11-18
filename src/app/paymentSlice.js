@@ -49,8 +49,8 @@ export const slice = createSlice({
 
 export const { paymentSession, paymentDataStore } = slice.actions;
 
-export const initiateCheckout = () => async (dispatch) => {
-  const response = await fetch("/api/sessions", {
+export const initiateCheckout = (type) => async (dispatch) => {
+  const response = await fetch(`/api/sessions?type=${type}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
