@@ -35,18 +35,16 @@ class CheckoutContainer extends React.Component {
       return;
     }
 
-    const configWithSession = {...config}
-    configWithSession.session = sessionAndOrderRef[0];
-
-    const payload = {
-      ...configWithSession,
-      onPaymentCompleted : ((res, comp) => {console.log("payment completed " + res); this.processPaymentResponse(res);}),
-      onError : ((err, comp) => {console.log("payment error " + err); ; this.processPaymentResponse(err);}),
-    };
+    const configWithSession = {
+      ...config,
+      session : sessionAndOrderRef[0],
+      onPaymentCompleted : ((res, _) => {console.log("payment completed " + res); this.processPaymentResponse(res);}),
+      onError : ((err, _) => {console.log("payment error " + err); ; this.processPaymentResponse(err);}),      
+    }
 
     // @ts-ignore
     // eslint-disable-next-line no-undef
-    this.checkout = new AdyenCheckout(payload)
+    this.checkout = new AdyenCheckout(configWithSession)
       .then(checkout => { checkout.create(this.props.type).mount(this.paymentContainer.current);});
   }
 

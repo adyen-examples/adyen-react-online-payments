@@ -13,19 +13,16 @@ class RedirectContainer extends React.Component {
     const sessionId = new URLSearchParams(this.props.location.search).get('sessionId');
     const redirectResult = new URLSearchParams(this.props.location.search).get('redirectResult');
 
-    const configWithSession = {...config}
-    configWithSession.session = {id: sessionId};
-
-    const payload = {
-      ...configWithSession,
+    const configWithSession = {
+      ...config,
+      session : {id: sessionId},
       onPaymentCompleted : ((res, _) => {console.log("payment completed " + res); this.processPaymentResponse(res);}),
-      onError : ((err, _) => {console.log("payment error " + err); ; this.processPaymentResponse(err);}),
-    };
+      onError : ((err, _) => {console.log("payment error " + err); ; this.processPaymentResponse(err);}),      
+    }
     
-
     // @ts-ignore
     // eslint-disable-next-line no-undef
-    this.checkout = new AdyenCheckout(payload).then((checkout) => {
+    this.checkout = new AdyenCheckout(configWithSession).then((checkout) => {
       checkout.submitDetails({details: {redirectResult}}); // we finalize the redirect flow with the reeived payload
     });
   }
