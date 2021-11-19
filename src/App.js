@@ -1,6 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import { Payment } from "./features/payment/Payment";
+import { ConnectedRedirectContainer } from "./features/redirect/Redirect";
 import { Preview } from "./features/preview/Preview";
 import { Status } from "./features/status/Status";
 import { Cancel } from "./features/cancel/Cancel";
@@ -22,6 +23,9 @@ function App() {
         <Route path="/cancel">
           <Cancel />
         </Route>
+        <Route path="/redirect">
+          <ConnectedRedirectContainer />
+        </Route>        
         <Route path="/">
           <div className="main-container">
             <div className="info">
