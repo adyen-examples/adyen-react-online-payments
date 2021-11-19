@@ -32,7 +32,6 @@ const validator = new hmacValidator();
 
 // in memory store for transaction
 const paymentStore = {};
-const originStore = {};
 
 /* ################# API ENDPOINTS ###################### */
 app.get("/api/getPaymentDataStore", async (req, res) => res.json(paymentStore));
@@ -43,6 +42,9 @@ app.post("/api/sessions", async (req, res) => {
   try {
     // unique ref for the transaction
     const orderRef = uuid();
+
+    console.log("Received payment request for orderRef: " + orderRef);
+
     // Ideally the data passed here should be computed based on business logic
     const response = await checkout.sessions({
       amount: { currency: "EUR", value: 1000 }, // value is 10€ in minor units
@@ -93,32 +95,45 @@ app.post("/api/webhook/notification", async (req, res) => {
 
   notificationRequestItems.forEach(({ NotificationRequestItem }) => {
     console.info("Received webhook notification", NotificationRequestItem);
+    console.info("process.env.HMAC_KEY", process.env.HMAC_KEY);
     // Process the notification based on the eventCode
-    if (NotificationRequestItem.eventCode === "CANCEL_OR_REFUND") {
-      if (validator.validateHMAC(NotificationRequestItem, process.env.ADYEN_HMAC_KEY)) {
-        const payment = findPayment(NotificationRequestItem.pspReference);
-
+    if (validator.validateHMAC(NotificationRequestItem, process.env.HMAC_KEY)) {
+      const payment = paymentStore[NotificationRequestItem.merchantReference];
+      if(payment){
         if (NotificationRequestItem.success === "true") {
-          // update with additionalData.modification.action
-          if (
-            "modification.action" in NotificationRequestItem.additionalData &&
-            "refund" === NotificationRequestItem.additionalData["modification.action"]
-          ) {
-            payment.status = "Refunded";
-          } else {
-            payment.status = "Cancelled";
+          if (NotificationRequestItem.eventCode === "AUTHORISATION"){
+            payment.status = "Authorised";
+            payment.paymentRef = NotificationRequestItem.pspReference;
           }
-        } else {
-          // update with failure
-          payment.status = "Refund failed";
+          else if (NotificationRequestItem.eventCode === "CANCEL_OR_REFUND") {
+            // update with additionalData.modification.action
+            if (
+              "modification.action" in NotificationRequestItem.additionalData &&
+              "refund" === NotificationRequestItem.additionalData["modification.action"]
+            ) {
+              payment.status = "Refunded";
+            } else {
+              payment.status = "Cancelled";
+            }
+          } 
+          else {
+            // do nothing
+            console.info("skipping non actionable webhook");
+          }
         }
-      } else {
-        console.error("NotificationRequest with invalid HMAC key received");
+        else{
+          // update with failure
+          payment.status = `${NotificationRequestItem.eventCode} failed`;
+        }
       }
-    } else {
-      // do nothing
-      console.info("skipping non actionable webhook");
+      else {
+        console.error("No valid payment found for notification");
     }
+    }
+    else {
+        console.error("NotificationRequest with invalid HMAC key received");
+    }
+
   });
 
   res.send("[accepted]");
@@ -134,18 +149,6 @@ app.get("*", (req, res) => {
 });
 
 /* ################# end CLIENT ENDPOINTS ###################### */
-
-/* ################# UTILS ###################### */
-
-function findPayment(pspReference) {
-  const payments = Object.values(paymentStore).filter((v) => v.modificationRef === pspReference);
-  if (payments.length > 0) {
-    console.error("More than one payment found with same modification PSP reference");
-  }
-  return payments[0];
-}
-
-/* ################# end UTILS ###################### */
 
 // Start server
 const PORT = process.env.PORT || 8080;
