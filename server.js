@@ -72,13 +72,12 @@ app.post("/api/cancelOrRefundPayment", async (req, res) => {
   // Create the payload for cancelling payment
   const payload = {
     merchantAccount: process.env.MERCHANT_ACCOUNT, // required
-    originalReference: paymentStore[req.query.orderRef].paymentRef, // required
     reference: uuid(),
   };
 
   try {
     // Return the response back to client
-    const response = await modification.cancelOrRefund(payload);
+    const response = await modification.reversals(paymentStore[req.query.orderRef].paymentRef, payload);
     paymentStore[req.query.orderRef].status = "Refund Initiated";
     paymentStore[req.query.orderRef].modificationRef = response.pspReference;
     res.json(response);
@@ -95,7 +94,6 @@ app.post("/api/webhook/notification", async (req, res) => {
 
   notificationRequestItems.forEach(({ NotificationRequestItem }) => {
     console.info("Received webhook notification", NotificationRequestItem);
-    console.info("process.env.HMAC_KEY", process.env.HMAC_KEY);
     // Process the notification based on the eventCode
     if (validator.validateHMAC(NotificationRequestItem, process.env.HMAC_KEY)) {
       const payment = paymentStore[NotificationRequestItem.merchantReference];

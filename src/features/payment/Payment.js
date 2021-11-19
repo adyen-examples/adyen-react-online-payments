@@ -38,8 +38,8 @@ class CheckoutContainer extends React.Component {
     const configWithSession = {
       ...config,
       session : sessionAndOrderRef[0],
-      onPaymentCompleted : ((res, _) => {console.log("payment completed " + res); this.processPaymentResponse(res);}),
-      onError : ((err, _) => {console.log("payment error " + err); ; this.processPaymentResponse(err);}),      
+      onPaymentCompleted : ((res, _) => {this.processPaymentResponse(res);}),
+      onError : ((err, _) => {this.processPaymentResponse(err);}),      
     }
 
     // @ts-ignore
