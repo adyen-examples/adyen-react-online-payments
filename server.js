@@ -81,6 +81,7 @@ app.post("/api/cancelOrRefundPayment", async (req, res) => {
     paymentStore[req.query.orderRef].status = "Refund Initiated";
     paymentStore[req.query.orderRef].modificationRef = response.pspReference;
     res.json(response);
+    console.info("Refund initiated for ", response);
   } catch (err) {
     console.error(`Error: ${err.message}, error code: ${err.errorCode}`);
     res.status(err.statusCode).json(err.message);
@@ -94,42 +95,42 @@ app.post("/api/webhook/notification", async (req, res) => {
 
   notificationRequestItems.forEach(({ NotificationRequestItem }) => {
     console.info("Received webhook notification", NotificationRequestItem);
-    // Process the notification based on the eventCode
-    if (validator.validateHMAC(NotificationRequestItem, process.env.HMAC_KEY)) {
-      const payment = paymentStore[NotificationRequestItem.merchantReference];
-      if(payment){
-        if (NotificationRequestItem.success === "true") {
-          if (NotificationRequestItem.eventCode === "AUTHORISATION"){
-            payment.status = "Authorised";
-            payment.paymentRef = NotificationRequestItem.pspReference;
-          }
-          else if (NotificationRequestItem.eventCode === "CANCEL_OR_REFUND") {
-            // update with additionalData.modification.action
-            if (
-              "modification.action" in NotificationRequestItem.additionalData &&
-              "refund" === NotificationRequestItem.additionalData["modification.action"]
-            ) {
-              payment.status = "Refunded";
-            } else {
-              payment.status = "Cancelled";
+    try{
+      if (validator.validateHMAC(NotificationRequestItem, process.env.HMAC_KEY)) {
+          if (NotificationRequestItem.success === "true") {
+            // Process the notification based on the eventCode
+            if (NotificationRequestItem.eventCode === "AUTHORISATION"){
+              const payment = paymentStore[NotificationRequestItem.merchantReference];
+              if(payment){
+                payment.status = "Authorised";
+                payment.paymentRef = NotificationRequestItem.pspReference;
+              }
             }
-          } 
-          else {
-            // do nothing
-            console.info("skipping non actionable webhook");
+            else if (NotificationRequestItem.eventCode === "CANCEL_OR_REFUND") {
+              const payment = findPayment(NotificationRequestItem.pspReference);
+              if(payment){
+                console.log("Payment found: ", JSON.stringify(payment));
+                // update with additionalData.modification.action
+                if (
+                  "modification.action" in NotificationRequestItem.additionalData &&
+                  "refund" === NotificationRequestItem.additionalData["modification.action"]
+                ) {
+                  payment.status = "Refunded";
+                } else {
+                  payment.status = "Cancelled";
+                }
+              }
+            } 
+            else {
+              console.info("skipping non actionable webhook");
+            }
           }
-        }
-        else{
-          // update with failure
-          payment.status = `${NotificationRequestItem.eventCode} failed`;
-        }
       }
       else {
-        console.error("No valid payment found for notification");
-    }
-    }
-    else {
-        console.error("NotificationRequest with invalid HMAC key received");
+          console.error("NotificationRequest with invalid HMAC key received");
+      }
+    }catch(err){
+      console.error("Error: ", err);
     }
 
   });
@@ -147,6 +148,18 @@ app.get("*", (req, res) => {
 });
 
 /* ################# end CLIENT ENDPOINTS ###################### */
+
+/* ################# UTILS ###################### */
+
+function findPayment(pspReference) {
+  const payments = Object.values(paymentStore).filter((v) => v.modificationRef === pspReference);
+  if (payments.length < 0) {
+    console.error("No payment found with that PSP reference");
+  }
+  return payments[0];
+}
+
+/* ################# end UTILS ###################### */
 
 // Start server
 const PORT = process.env.PORT || 8080;
