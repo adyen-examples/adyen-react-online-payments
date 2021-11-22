@@ -29,7 +29,7 @@ class CheckoutContainer extends React.Component {
   }
 
   async componentDidUpdate(prevProps) {
-    const { sessionAndOrderRef, config, error } = this.props.payment;
+    const { session, config, error } = this.props.payment;
     if (error && error !== prevProps.payment.error) {
       window.location.href = `/status/error?reason=${error}`;
       return;
@@ -37,7 +37,7 @@ class CheckoutContainer extends React.Component {
 
     const configWithSession = {
       ...config,
-      session : sessionAndOrderRef[0],
+      session,
       onPaymentCompleted : ((res, _) => {this.processPaymentResponse(res);}),
       onError : ((err, _) => {this.processPaymentResponse(err);}),      
     }
