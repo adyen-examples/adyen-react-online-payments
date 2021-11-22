@@ -28,7 +28,7 @@ class CheckoutContainer extends React.Component {
     this.props.initiateCheckout(this.props.type);
   }
 
-  componentDidUpdate(prevProps) {
+  async componentDidUpdate(prevProps) {
     const { sessionAndOrderRef, config, error } = this.props.payment;
     if (error && error !== prevProps.payment.error) {
       window.location.href = `/status/error?reason=${error}`;
@@ -42,10 +42,8 @@ class CheckoutContainer extends React.Component {
       onError : ((err, _) => {this.processPaymentResponse(err);}),      
     }
 
-    // @ts-ignore
-    // eslint-disable-next-line no-undef
-    this.checkout = new AdyenCheckout(configWithSession)
-      .then(checkout => { checkout.create(this.props.type).mount(this.paymentContainer.current);});
+    const checkout = await AdyenCheckout(configWithSession);
+    checkout.create(this.props.type).mount(this.paymentContainer.current);
   }
 
   processPaymentResponse(paymentRes) {
