@@ -2,7 +2,18 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getPaymentDataStore, cancelOrRefundPayment } from "../../app/paymentSlice";
 
-export function Cancel() {
+export const CancelContainer = () => (
+  <main className="preview-page">
+    <section className="cart">
+      <h2>Payment Transactions</h2>
+      <div className="order-summary">
+        <CancelList />
+      </div>
+    </section>
+  </main>
+);
+
+const CancelList = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -11,36 +22,43 @@ export function Cancel() {
 
   const paymentDataStore = useSelector((state) => state.payment.paymentDataStoreRes);
 
+  if (!paymentDataStore) {
+    return (
+      <p className="m-5">Loading</p>
+    );
+  }
+
+  const validPayments = paymentDataStore ? Object.values(paymentDataStore).filter(val => val.paymentRef) : []
+
+  if (validPayments.length === 0) {
+    return (
+      <p className="m-5">Please make a payment first</p>
+    )
+  }
+
   return (
-    <main className="preview-page">
-      <section className="cart">
-        <h2>Payment Transactions</h2>
-        <div className="order-summary">
-          <ul className="order-summary-list">
-            {paymentDataStore && Object.values(paymentDataStore).length > 0 ? (
-              Object.values(paymentDataStore).map((val) =>
-                val.paymentRef ? (
-                  <li className="order-summary-list-list-item" key={val.reference}>
-                    <p className="m-auto">Ref: {val.paymentRef}</p>
-                    <p className="m-auto">{val.status}</p>
-                    <p className="m-auto">
-                      {val.amount.value / 100} {/* adjust for minor units */}
-                      {val.amount.currency}
-                    </p>
-                    {val.status === "Authorised" ? (
-                      <button className="button btn-info w-25 my-4" onClick={() => dispatch(cancelOrRefundPayment(val.reference))}>
-                        Cancel
-                      </button>
-                    ) : null}
-                  </li>
-                ) : null
-              )
-            ) : (
-              <p className="m-5">Please make a payment first</p>
-            )}
-          </ul>
-        </div>
-      </section>
-    </main>
-  );
-}
+    <ul className="order-summary-list">
+      {validPayments.map((val) => <CancelItem payment={val} />)}
+    </ul>
+  )
+};
+
+const CancelItem = ({ payment }) => {
+  const dispatch = useDispatch();
+
+  return (
+    <li className="order-summary-list-list-item" key={payment.reference}>
+      <p className="m-auto">Ref: {payment.paymentRef}</p>
+      <p className="m-auto">{payment.status}</p>
+      <p className="m-auto">
+        {payment.amount.value / 100} {/* adjust for minor units */}
+        {payment.amount.currency}
+      </p>
+      {payment.status === "Authorised" ? (
+        <button className="button btn-info w-25 my-4" onClick={() => dispatch(cancelOrRefundPayment(payment.reference))}>
+          Cancel
+        </button>
+      ) : null}
+    </li>
+  )
+};

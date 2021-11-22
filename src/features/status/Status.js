@@ -35,7 +35,7 @@ export const Message = ({ type, reason }) => {
   );
 };
 
-export function Status() {
+export const StatusContainer = () => {
   let { type } = useParams();
   let query = new URLSearchParams(useLocation().search);
   let reason = query ? query.get("reason") : "";

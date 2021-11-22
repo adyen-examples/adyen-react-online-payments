@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, useParams } from "react-router-dom";
 
-export function Preview() {
+export const PreviewContainer = () => {
   let { type } = useParams();
 
   return (

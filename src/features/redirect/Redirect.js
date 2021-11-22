@@ -1,57 +1,42 @@
-import React from "react";
-import { connect } from "react-redux";
+import React, { useEffect } from "react";
+import { useSelector } from "react-redux";
 import AdyenCheckout from "@adyen/adyen-web";
 import "@adyen/adyen-web/dist/adyen.css";
-import { withRouter } from 'react-router-dom';
-
+import { useLocation, useNavigate } from "react-router";
+import { getRedirectUrl } from "../../util/redirect";
 
 // This class is used to finalize redirect flows for some payment methods
-class RedirectContainer extends React.Component {
-  async componentDidMount() {
-    const { config } = this.props.payment;
+export const RedirectContainer = () => {
+  const location = useLocation();
 
-    const sessionId = new URLSearchParams(this.props.location.search).get('sessionId');
-    const redirectResult = new URLSearchParams(this.props.location.search).get('redirectResult');
+  const payment = useSelector(state => state.payment);
 
-    const configWithSession = {
-      ...config,
-      session : {id: sessionId},
-      onPaymentCompleted : ((res, _) => {this.processPaymentResponse(res);}),
-      onError : ((err, _) => {this.processPaymentResponse(err);}),      
-    }
+  const navigate = useNavigate();
 
-    const checkout = await AdyenCheckout(configWithSession);
-    checkout.submitDetails({details: {redirectResult}}); // we finalize the redirect flow with the reeived payload
-  }
+  useEffect(() => {
+    const { config } = payment;
 
-  processPaymentResponse(paymentRes) {
-    switch (paymentRes.resultCode) {
-      case "Authorised":
-        this.props.history.replace("/status/success");
-        break;
-      case "Pending":
-      case "Received":
-        this.props.history.replace("/status/pending");
-        break;
-      case "Refused":
-        this.props.history.replace("/status/failed");
-        break;
-      default:
-        this.props.history.replace("/status/error");
-        break;
-    }
-  }
+    const sessionId = new URLSearchParams(location.search).get('sessionId');
+    const redirectResult = new URLSearchParams(location.search).get('redirectResult');
 
-  render() {
-    return (
-    <div id="redirect-page">
-    </div>
-    );
-  }
+    const createCheckout = async () => {
+      const checkout = await AdyenCheckout({
+        ...config,
+        session: { id: sessionId },
+        onPaymentCompleted: (response, _component) =>
+          navigate(getRedirectUrl(response.resultCode), { replace: true }),
+        onError: (error, _component) => {
+          console.error(error);
+          navigate(`/status/error?reason=${error.message}`, { replace: true });
+        },
+      });
+      checkout.submitDetails({ details: { redirectResult } }); // we finalize the redirect flow with the reeived payload
+    };
+
+    createCheckout();
+  }, [payment, navigate, location.search])
+
+  return (
+    <div id="redirect-page"></div>
+  );
 }
-
-const mapStateToProps = (state) => ({
-  payment: state.payment,
-});
-
-export const ConnectedRedirectContainer = connect(mapStateToProps)(withRouter(RedirectContainer));
