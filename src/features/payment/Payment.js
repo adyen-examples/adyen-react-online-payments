@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useParams, withRouter } from "react-router-dom";
 import AdyenCheckout from "@adyen/adyen-web";
 import "@adyen/adyen-web/dist/adyen.css";
 import { initiateCheckout } from "../../app/paymentSlice";
@@ -31,7 +31,7 @@ class CheckoutContainer extends React.Component {
   async componentDidUpdate(prevProps) {
     const { session, config, error } = this.props.payment;
     if (error && error !== prevProps.payment.error) {
-      window.location.href = `/status/error?reason=${error}`;
+      this.props.history.replace(`/status/error?reason=${error}`);
       return;
     }
 
@@ -49,17 +49,17 @@ class CheckoutContainer extends React.Component {
   processPaymentResponse(paymentRes) {
     switch (paymentRes.resultCode) {
       case "Authorised":
-        window.location.href = "/status/success";
+        this.props.history.replace("/status/success");
         break;
       case "Pending":
       case "Received":
-        window.location.href = "/status/pending";
+        this.props.history.replace("/status/pending");
         break;
       case "Refused":
-        window.location.href = "/status/failed";
+        this.props.history.replace("/status/failed");
         break;
       default:
-        window.location.href = "/status/error";
+        this.props.history.replace("/status/error");
         break;
     }
   }
@@ -79,4 +79,4 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = { initiateCheckout };
 
-export const ConnectedCheckoutContainer = connect(mapStateToProps, mapDispatchToProps)(CheckoutContainer);
+export const ConnectedCheckoutContainer = connect(mapStateToProps, mapDispatchToProps)(withRouter(CheckoutContainer));

@@ -27,17 +27,17 @@ class RedirectContainer extends React.Component {
   processPaymentResponse(paymentRes) {
     switch (paymentRes.resultCode) {
       case "Authorised":
-        window.location.href = "/status/success";
+        this.props.history.replace("/status/success");
         break;
       case "Pending":
       case "Received":
-        window.location.href = "/status/pending";
+        this.props.history.replace("/status/pending");
         break;
       case "Refused":
-        window.location.href = "/status/failed";
+        this.props.history.replace("/status/failed");
         break;
       default:
-        window.location.href = "/status/error";
+        this.props.history.replace("/status/error");
         break;
     }
   }
