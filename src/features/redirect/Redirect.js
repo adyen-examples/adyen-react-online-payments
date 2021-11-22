@@ -7,7 +7,7 @@ import { withRouter } from 'react-router-dom';
 
 // This class is used to finalize redirect flows for some payment methods
 class RedirectContainer extends React.Component {
-  componentDidMount() { 
+  async componentDidMount() {
     const { config } = this.props.payment;
 
     const sessionId = new URLSearchParams(this.props.location.search).get('sessionId');
@@ -19,28 +19,25 @@ class RedirectContainer extends React.Component {
       onPaymentCompleted : ((res, _) => {this.processPaymentResponse(res);}),
       onError : ((err, _) => {this.processPaymentResponse(err);}),      
     }
-    
-    // @ts-ignore
-    // eslint-disable-next-line no-undef
-    this.checkout = new AdyenCheckout(configWithSession).then((checkout) => {
-      checkout.submitDetails({details: {redirectResult}}); // we finalize the redirect flow with the reeived payload
-    });
+
+    const checkout = await AdyenCheckout(configWithSession);
+    checkout.submitDetails({details: {redirectResult}}); // we finalize the redirect flow with the reeived payload
   }
 
   processPaymentResponse(paymentRes) {
     switch (paymentRes.resultCode) {
       case "Authorised":
-        window.location.href = "/status/success";
+        this.props.history.replace("/status/success");
         break;
       case "Pending":
       case "Received":
-        window.location.href = "/status/pending";
+        this.props.history.replace("/status/pending");
         break;
       case "Refused":
-        window.location.href = "/status/failed";
+        this.props.history.replace("/status/failed");
         break;
       default:
-        window.location.href = "/status/error";
+        this.props.history.replace("/status/error");
         break;
     }
   }

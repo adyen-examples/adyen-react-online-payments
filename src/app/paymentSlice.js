@@ -4,7 +4,8 @@ export const slice = createSlice({
   name: "payment",
   initialState: {
     error: "",
-    sessionAndOrderRef: null,
+    session: null,
+    orderRef: null,
     paymentDataStoreRes: null,
     config: {
       storePaymentMethod: true,
@@ -34,7 +35,7 @@ export const slice = createSlice({
       if (status >= 300) {
         state.error = res;
       } else {
-        state.sessionAndOrderRef = res;
+        [state.session, state.orderRef] = res;
       }
     },
     paymentDataStore: (state, action) => {
