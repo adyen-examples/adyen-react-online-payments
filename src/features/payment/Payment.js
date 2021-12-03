@@ -1,82 +1,78 @@
-import React from "react";
-import { connect } from "react-redux";
-import { useParams, withRouter } from "react-router-dom";
+import React, { useEffect, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams, useNavigate } from "react-router-dom";
 import AdyenCheckout from "@adyen/adyen-web";
 import "@adyen/adyen-web/dist/adyen.css";
 import { initiateCheckout } from "../../app/paymentSlice";
+import { getRedirectUrl } from "../../util/redirect";
 
-export function Payment() {
+export const PaymentContainer = () => {
   const { type } = useParams();
+
   return (
     <div id="payment-page">
       <div className="container">
-        <ConnectedCheckoutContainer type={type} />
+        <Checkout type={type} />
       </div>
     </div>
   );
 }
 
-class CheckoutContainer extends React.Component {
-  constructor(props) {
-    super(props);
-    this.paymentContainer = React.createRef();
+const Checkout = () => {
+  const dispatch = useDispatch();
+  const payment = useSelector(state => state.payment);
 
-    this.processPaymentResponse = this.processPaymentResponse.bind(this);
-  }
+  const navigate = useNavigate();
 
-  componentDidMount() {
-    this.props.initiateCheckout(this.props.type);
-  }
+  const paymentContainer = useRef(null);
 
-  async componentDidUpdate(prevProps) {
-    const { session, config, error } = this.props.payment;
-    if (error && error !== prevProps.payment.error) {
-      this.props.history.replace(`/status/error?reason=${error}`);
+  const { type } = useParams();
+
+  useEffect(() => {
+    dispatch(initiateCheckout(type));
+  }, [dispatch, type])
+
+
+  useEffect(() => {
+    const { error } = payment;
+
+    if (error) {
+      navigate(`/status/error?reason=${error}`, { replace: true });
+    }
+  }, [payment, navigate])
+
+
+  useEffect(() => {
+    const { config, session } = payment;
+
+    if (!session || !paymentContainer.current) {
+      // initiateCheckout is not finished yet.
       return;
     }
 
-    const configWithSession = {
-      ...config,
-      session,
-      onPaymentCompleted : ((res, _) => {this.processPaymentResponse(res);}),
-      onError : ((err, _) => {this.processPaymentResponse(err);}),      
+    const createCheckout = async () => {
+      const checkout = await AdyenCheckout({
+        ...config,
+        session,
+        onPaymentCompleted: (response, _component) =>
+          navigate(getRedirectUrl(response.resultCode), { replace: true }),
+        onError: (error, _component) => {
+          console.error(error);
+          navigate(`/status/error?reason=${error.message}`, { replace: true });
+        },
+      });
+
+      if (paymentContainer.current) {
+        checkout.create(type).mount(paymentContainer.current);
+      }
     }
 
-    const checkout = await AdyenCheckout(configWithSession);
-    checkout.create(this.props.type).mount(this.paymentContainer.current);
-  }
+    createCheckout();
+  }, [payment, type, navigate])
 
-  processPaymentResponse(paymentRes) {
-    switch (paymentRes.resultCode) {
-      case "Authorised":
-        this.props.history.replace("/status/success");
-        break;
-      case "Pending":
-      case "Received":
-        this.props.history.replace("/status/pending");
-        break;
-      case "Refused":
-        this.props.history.replace("/status/failed");
-        break;
-      default:
-        this.props.history.replace("/status/error");
-        break;
-    }
-  }
-
-  render() {
-    return (
-      <div className="payment-container">
-        <div ref={this.paymentContainer} className="payment"></div>
-      </div>
-    );
-  }
+  return (
+    <div className="payment-container">
+      <div ref={paymentContainer} className="payment"></div>
+    </div>
+  );
 }
-
-const mapStateToProps = (state) => ({
-  payment: state.payment,
-});
-
-const mapDispatchToProps = { initiateCheckout };
-
-export const ConnectedCheckoutContainer = connect(mapStateToProps, mapDispatchToProps)(withRouter(CheckoutContainer));
