@@ -48,7 +48,7 @@ npm install
 ```
 API_KEY="your_API_key_here"
 MERCHANT_ACCOUNT="your_merchant_account_here"
-REACT_APP_CLIENT_KEY="your_client_key_here"
+ADYEN_CLIENT_KEY="your_client_key_here"
 ADYEN_HMAC_KEY=yourNotificationSetupHMACkey
 ```
 

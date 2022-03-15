@@ -25,7 +25,7 @@ export const slice = createSlice({
       },
       locale: "en_US",
       showPayButton: true,
-      clientKey: process.env.REACT_APP_CLIENT_KEY,
+      clientKey: process.env.ADYEN_CLIENT_KEY,
       environment: "test",
     },
   },
