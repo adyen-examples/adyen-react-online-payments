@@ -23,7 +23,7 @@ dotenv.config({
 
 // Adyen Node.js API library boilerplate (configuration, etc.)
 const config = new Config();
-config.apiKey = process.env.API_KEY;
+config.apiKey = process.env.REACT_APP_ADYEN_API_KEY;
 const client = new Client({ config });
 client.setEnvironment("TEST");
 const checkout = new CheckoutAPI(client);
@@ -49,7 +49,7 @@ app.post("/api/sessions", async (req, res) => {
     const response = await checkout.sessions({
       amount: { currency: "EUR", value: 1000 }, // value is 10€ in minor units
       reference: orderRef, // required
-      merchantAccount: process.env.MERCHANT_ACCOUNT, // required
+      merchantAccount: process.env.REACT_APP_ADYEN_MERCHANT_ACCOUNT, // required
       channel: "Web", // required
       returnUrl: `http://localhost:8080/redirect?orderRef=${orderRef}`, // required for 3ds2 redirect flow
     });
@@ -71,7 +71,7 @@ app.post("/api/sessions", async (req, res) => {
 app.post("/api/cancelOrRefundPayment", async (req, res) => {
   // Create the payload for cancelling payment
   const payload = {
-    merchantAccount: process.env.MERCHANT_ACCOUNT, // required
+    merchantAccount: process.env.REACT_APP_ADYEN_MERCHANT_ACCOUNT, // required
     reference: uuid(),
   };
 

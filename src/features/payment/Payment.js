@@ -44,7 +44,7 @@ const Checkout = () => {
 
   useEffect(() => {
     const { config, session } = payment;
-
+    
     if (!session || !paymentContainer.current) {
       // initiateCheckout is not finished yet.
       return;
