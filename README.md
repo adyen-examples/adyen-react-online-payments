@@ -1,5 +1,18 @@
 # Adyen [online payment](https://docs.adyen.com/checkout) integration demos
 
+## Run this integration in seconds using [Gitpod](https://gitpod.io/)
+
+* Open your [Adyen Test Account](https://ca-test.adyen.com/ca/ca/overview/default.shtml) and create a set of [API keys](https://docs.adyen.com/user-management/how-to-get-the-api-key).
+* Go to [gitpod account variables](https://gitpod.io/variables).
+* Set the `ADYEN_API_KEY`, `ADYEN_CLIENT_KEY`, `ADYEN_HMAC_KEY` and `ADYEN_MERCHANT_ACCOUNT variables`.
+* Click the button below!
+
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/adyen-examples/adyen-react-online-payments)
+
+_NOTE: To allow the Adyen Drop-In and Components to load, you have to add gitpod.io as allowed origin for your chosen set of [API Credentials](https://ca-test.adyen.com/ca/ca/config/api_credentials_new.shtml)_
+
+## Details
+
 This repository includes examples of PCI-compliant React UI integrations for online payments with Adyen. Within this demo app, you'll find a simplified version of an e-commerce website, complete with commented code to highlight key features and concepts of Adyen's API. Check out the underlying code to see how you can integrate Adyen to give your shoppers the option to pay with their preferred payment methods, all in a seamless checkout experience.
 
 ![Card checkout demo](public/images/cardcheckout.gif)
