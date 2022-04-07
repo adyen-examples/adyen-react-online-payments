@@ -38,6 +38,11 @@ export const slice = createSlice({
         [state.session, state.orderRef] = res;
       }
     },
+    clearPaymentSession: (state) => {
+      state.error = "";
+      state.session = null;
+      state.orderRef = null;
+    },
     paymentDataStore: (state, action) => {
       const [res, status] = action.payload;
       if (status >= 300) {
@@ -49,7 +54,7 @@ export const slice = createSlice({
   },
 });
 
-export const { paymentSession, paymentDataStore } = slice.actions;
+export const { paymentSession, clearPaymentSession, paymentDataStore } = slice.actions;
 
 export const initiateCheckout = (type) => async (dispatch) => {
   const response = await fetch(`/api/sessions?type=${type}`, {
