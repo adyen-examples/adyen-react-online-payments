@@ -33,12 +33,32 @@ const validator = new hmacValidator();
 // in memory store for transaction
 const paymentStore = {};
 
+const determineHostUrl = (req) => {
+  let {
+    "x-forwarded-proto": forwardedProto,
+    "x-forwarded-host": forwardedHost,
+  } = req.headers
+
+  if (process.env.REACT_APP_ADYEN_RETURN_URL) {
+    return process.env.REACT_APP_ADYEN_RETURN_URL;
+  }
+
+  if (forwardedProto && forwardedHost) {
+    if (forwardedProto.includes(",")) {
+      [forwardedProto,] = forwardedProto.split(",")
+    }
+
+    return `${forwardedProto}://${forwardedHost}`
+  }
+
+  return "http://localhost:8080"
+}
+
 /* ################# API ENDPOINTS ###################### */
 app.get("/api/getPaymentDataStore", async (req, res) => res.json(paymentStore));
 
 // Submitting a payment
 app.post("/api/sessions", async (req, res) => {
-
   try {
     // unique ref for the transaction
     const orderRef = uuid();
@@ -51,7 +71,7 @@ app.post("/api/sessions", async (req, res) => {
       reference: orderRef, // required
       merchantAccount: process.env.REACT_APP_ADYEN_MERCHANT_ACCOUNT, // required
       channel: "Web", // required
-      returnUrl: `http://localhost:8080/redirect?orderRef=${orderRef}`, // required for 3ds2 redirect flow
+      returnUrl: `${determineHostUrl(req)}/redirect?orderRef=${orderRef}`, // required for 3ds2 redirect flow
     });
 
     // save transaction in memory
