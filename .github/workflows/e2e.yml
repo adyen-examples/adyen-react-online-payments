@@ -1,0 +1,23 @@
+name: E2E (Playwright)
+
+on:
+  workflow_dispatch:
+  push:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  checkout:
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v2
+      - name: Build image (application)
+        run: docker build -t test-image:latest .
+      - name: Start container (application)
+        run: docker run --rm -d --name test-image -p 8080:8080 -e ADYEN_API_KEY="${{ secrets.ADYEN_API_KEY }}" -e ADYEN_MERCHANT_ACCOUNT=${{ secrets.ADYEN_MERCHANT_ACCOUNT }} -e ADYEN_CLIENT_KEY=${{ secrets.ADYEN_CLIENT_KEY }} -e ADYEN_HMAC_KEY=${{ secrets.ADYEN_HMAC_KEY }} test-image:latest
+      - name: Run testing suite
+        run: docker run --rm --name adyen-testing-suite --network host ghcr.io/adyen-examples/adyen-testing-suite:latest
+
+
