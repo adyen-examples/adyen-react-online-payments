@@ -2,20 +2,7 @@ FROM node:16
 
 COPY . .
 
-ARG ADYEN_CLIENT_KEY
-ENV ADYEN_CLIENT_KEY_B=$ADYEN_CLIENT_KEY
-
-ARG ADYEN_HMAC_KEY
-ARG ADYEN_MERCHANT_ACCOUNT
-
-RUN touch .env && \
-    printf REACT_APP_ADYEN_CLIENT_KEY=${ADYEN_CLIENT_KEY_B} >> .env && \
-    echo "REACT_APP_ADYEN_MERCHANT_ACCOUNT=$ADYEN_MERCHANT_ACCOUNT" >> .env && \
-    echo "REACT_APP_ADYEN_HMAC_KEY=$ADYEN_HMAC_KEY" >> .env && \
-    echo "REACT_APP_ADYEN_API_KEY=$ADYEN_API_KEY" >> .env 
-
 RUN npm install
-RUN npm run build
 
 EXPOSE 8080
-CMD [ "node", "server" ]
+CMD [ "npm", "run", "server"]
