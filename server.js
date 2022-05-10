@@ -70,7 +70,6 @@ app.post("/api/sessions", async (req, res) => {
       amount: { currency: "EUR", value: 1000 }, // value is 10€ in minor units
       reference: orderRef, // required
       merchantAccount: process.env.REACT_APP_ADYEN_MERCHANT_ACCOUNT, // required
-      channel: "Web", // required
       returnUrl: `${determineHostUrl(req)}/redirect?orderRef=${orderRef}`, // required for 3ds2 redirect flow
     });
 
