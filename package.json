@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@adyen/adyen-web": "^5.2.2",
-    "@adyen/api-library": "^10.1.0",
+    "@adyen/adyen-web": "^5.16.0",
+    "@adyen/api-library": "^10.3.0",
     "@reduxjs/toolkit": "^1.6.2",
     "dotenv": "^10.0.0",
     "dotenv-cli": "^4.1.0",
