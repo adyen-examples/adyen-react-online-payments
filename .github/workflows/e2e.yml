@@ -19,6 +19,6 @@ jobs:
       - name: Start container (application)
         run: docker run --rm -d --name test-image -p 8080:8080 -e REACT_APP_ADYEN_API_KEY="${{ secrets.ADYEN_API_KEY }}" -e REACT_APP_ADYEN_MERCHANT_ACCOUNT=${{ secrets.ADYEN_MERCHANT_ACCOUNT }} -e REACT_APP_ADYEN_CLIENT_KEY=${{ secrets.ADYEN_CLIENT_KEY }} -e REACT_APP_ADYEN_HMAC_KEY=${{ secrets.ADYEN_HMAC_KEY }} test-image:latest
       - name: Run testing suite
-        run: docker run --rm --name adyen-testing-suite --network host ghcr.io/adyen-examples/adyen-testing-suite:v0.0.1
+        run: docker run --rm --name adyen-testing-suite --network host ghcr.io/adyen-examples/adyen-testing-suite:main
 
 
