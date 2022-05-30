@@ -43,7 +43,7 @@
   "proxy": "http://localhost:8080",
   "devDependencies": {
     "@testing-library/jest-dom": "^5.16.4",
-    "@testing-library/react": "^12.1.2",
+    "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^14.2.0",
     "@types/jest": "^27.5.0",
     "nodemon": "^2.0.16",
