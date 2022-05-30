@@ -5,7 +5,7 @@
   "dependencies": {
     "@adyen/adyen-web": "^5.16.0",
     "@adyen/api-library": "^10.3.0",
-    "@reduxjs/toolkit": "^1.6.2",
+    "@reduxjs/toolkit": "^1.8.2",
     "dotenv": "^10.0.0",
     "dotenv-cli": "^4.1.0",
     "express": "^4.17.1",
