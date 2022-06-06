@@ -45,7 +45,7 @@
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^14.2.0",
-    "@types/jest": "^27.5.0",
+    "@types/jest": "^28.1.1",
     "nodemon": "^2.0.16",
     "react-scripts": "4.0.3"
   }
