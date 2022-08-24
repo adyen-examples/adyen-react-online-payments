@@ -108,14 +108,17 @@ app.post("/api/cancelOrRefundPayment", async (req, res) => {
 });
 
 // Receive webhook notifications
-app.post("/api/webhook/notification", async (req, res) => {
+app.post("/api/webhooks/notifications", async (req, res) => {
+
+  var ret = false
+
   // get the notification request from POST body
   const notificationRequestItems = req.body.notificationItems;
 
   notificationRequestItems.forEach(({ NotificationRequestItem }) => {
     console.info("Received webhook notification", NotificationRequestItem);
     
-    if (validator.validateHMAC(NotificationRequestItem, process.env.HMAC_KEY)) {
+    if (validator.validateHMAC(NotificationRequestItem, process.env.ADYEN_HMAC_KEY)) {
       if (NotificationRequestItem.success === "true") {
         // Process the notification based on the eventCode
         if (NotificationRequestItem.eventCode === "AUTHORISATION"){
@@ -144,16 +147,23 @@ app.post("/api/webhook/notification", async (req, res) => {
           console.info("skipping non actionable webhook");
         }
       }
+      // notification ok
+      ret = true
     }
     else {
-        // invalid hmac: do not send [accepted] response
-        console.log("Invalid HMAC signature: " + notification);
-        res.status(401).send('Invalid HMAC signature');
+        // invalid hmac: notification cannot be accepted
+        ret = false
+        return false;  // exit from loop
     }
 
   });
 
-  res.send("[accepted]");
+  if(ret) {
+    res.send('[accepted]')
+  } else {
+    res.status(401).send('Invalid HMAC signature');
+  }
+
 });
 
 /* ################# end API ENDPOINTS ###################### */
