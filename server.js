@@ -118,7 +118,7 @@ app.post("/api/webhooks/notifications", async (req, res) => {
   notificationRequestItems.forEach(({ NotificationRequestItem }) => {
     console.info("Received webhook notification", NotificationRequestItem);
     
-    if (validator.validateHMAC(NotificationRequestItem, process.env.ADYEN_HMAC_KEY)) {
+    if (validator.validateHMAC(NotificationRequestItem, process.env.REACT_APP_ADYEN_HMAC_KEY)) {
       if (NotificationRequestItem.success === "true") {
         // Process the notification based on the eventCode
         if (NotificationRequestItem.eventCode === "AUTHORISATION"){
