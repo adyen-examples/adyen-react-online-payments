@@ -5,10 +5,10 @@
   "dependencies": {
     "@adyen/adyen-web": "^5.16.0",
     "@adyen/api-library": "^10.3.0",
-    "@reduxjs/toolkit": "^1.6.2",
+    "@reduxjs/toolkit": "^1.8.5",
     "dotenv": "^10.0.0",
     "dotenv-cli": "^4.1.0",
-    "express": "^4.17.1",
+    "express": "^4.18.1",
     "morgan": "^1.10.0",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
@@ -43,9 +43,9 @@
   "proxy": "http://localhost:8080",
   "devDependencies": {
     "@testing-library/jest-dom": "^5.16.4",
-    "@testing-library/react": "^12.1.2",
+    "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^14.2.0",
-    "@types/jest": "^27.5.0",
+    "@types/jest": "^28.1.8",
     "nodemon": "^2.0.16",
     "react-scripts": "4.0.3"
   }
