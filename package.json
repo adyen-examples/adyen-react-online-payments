@@ -46,7 +46,7 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^14.4.3",
     "@types/jest": "^29.1.1",
-    "nodemon": "^2.0.19",
+    "nodemon": "^2.0.20",
     "react-scripts": "5.0.1"
   }
 }
