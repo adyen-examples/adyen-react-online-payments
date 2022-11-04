@@ -3,7 +3,7 @@ const path = require("path");
 const dotenv = require("dotenv");
 const morgan = require("morgan");
 const { uuid } = require("uuidv4");
-const { Client, Config, CheckoutAPI, Modification, hmacValidator } = require("@adyen/api-library");
+const { Client, Config, CheckoutAPI, hmacValidator } = require("@adyen/api-library");
 // init app
 const app = express();
 // setup request logging
@@ -27,7 +27,6 @@ config.apiKey = process.env.REACT_APP_ADYEN_API_KEY;
 const client = new Client({ config });
 client.setEnvironment("TEST");
 const checkout = new CheckoutAPI(client);
-const modification = new Modification(client);
 const validator = new hmacValidator();
 
 // in memory store for transaction
@@ -64,7 +63,7 @@ app.post("/api/sessions", async (req, res) => {
     const orderRef = uuid();
 
     console.log("Received payment request for orderRef: " + orderRef);
-
+    
     // Ideally the data passed here should be computed based on business logic
     const response = await checkout.sessions({
       amount: { currency: "EUR", value: 1000 }, // value is 10€ in minor units
@@ -88,6 +87,7 @@ app.post("/api/sessions", async (req, res) => {
 
 // Cancel or Refund a payment
 app.post("/api/cancelOrRefundPayment", async (req, res) => {
+  console.log("/api/cancelOrRefundPayment orderRef: " + req.query.orderRef);
   // Create the payload for cancelling payment
   const payload = {
     merchantAccount: process.env.REACT_APP_ADYEN_MERCHANT_ACCOUNT, // required
@@ -96,7 +96,7 @@ app.post("/api/cancelOrRefundPayment", async (req, res) => {
 
   try {
     // Return the response back to client
-    const response = await modification.reversals(paymentStore[req.query.orderRef].paymentRef, payload);
+    const response = await checkout.reversals(paymentStore[req.query.orderRef].paymentRef, payload);
     paymentStore[req.query.orderRef].status = "Refund Initiated";
     paymentStore[req.query.orderRef].modificationRef = response.pspReference;
     res.json(response);
