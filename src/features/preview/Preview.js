@@ -13,18 +13,18 @@ export const PreviewContainer = () => {
             <li className="order-summary-list-list-item">
               <img src="/images/sunglasses.png" className="order-summary-list-list-item-image" alt="" />
               <p className="order-summary-list-list-item-title">Sunglasses</p>
-              <p className="order-summary-list-list-item-price">5.00</p>
+              <p className="order-summary-list-list-item-price">50.00</p>
             </li>
             <li className="order-summary-list-list-item">
               <img src="/images/headphones.png" className="order-summary-list-list-item-image" alt="" />
               <p className="order-summary-list-list-item-title">Headphones</p>
-              <p className="order-summary-list-list-item-price">5.00</p>
+              <p className="order-summary-list-list-item-price">50.00</p>
             </li>
           </ul>
         </div>
         <div className="cart-footer">
           <span className="cart-footer-label">Total:</span>
-          <span className="cart-footer-amount">10.00</span>
+          <span className="cart-footer-amount">100.00</span>
           <Link to={`/checkout/${type}`}>
             <p className="button">Continue to checkout</p>
           </Link>

@@ -18,7 +18,7 @@ export const slice = createSlice({
           holderNameRequired: true,
           name: "Credit or debit card",
           amount: {
-            value: 1000, // 10€ in minor units
+            value: 10000, // 100€ in minor units
             currency: "EUR",
           },
         },
