@@ -44,7 +44,8 @@ const Checkout = () => {
 
   useEffect(() => {
     const { config, session } = payment;
-    
+    let ignore = false;
+
     if (!session || !paymentContainer.current) {
       // initiateCheckout is not finished yet.
       return;
@@ -62,12 +63,16 @@ const Checkout = () => {
         },
       });
 
-      if (paymentContainer.current) {
+      if (paymentContainer.current && !ignore) {
         checkout.create(type).mount(paymentContainer.current);
       }
     }
 
     createCheckout();
+
+    return () => {
+      ignore = true;
+    }
   }, [payment, type, navigate])
 
   return (

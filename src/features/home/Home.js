@@ -90,24 +90,24 @@ export const Home = () => {
             </div>
           </Link>
         </li>
-        <li class="integration-list-item">
-      <a href="/preview/klarna_paynow" class="integration-list-item-link">
-        <div class="title-container">
-          <p class="integration-list-item-title">Klarna - Pay now</p>
+        <li className="integration-list-item">
+      <a href="/preview/klarna_paynow" className="integration-list-item-link">
+        <div className="title-container">
+          <p className="integration-list-item-title">Klarna - Pay now</p>
         </div>
       </a>
     </li>
-    <li class="integration-list-item">
-      <a href="/preview/klarna" class="integration-list-item-link">
-        <div class="title-container">
-          <p class="integration-list-item-title">Klarna - Pay later</p>
+    <li className="integration-list-item">
+      <a href="/preview/klarna" className="integration-list-item-link">
+        <div className="title-container">
+          <p className="integration-list-item-title">Klarna - Pay later</p>
         </div>
       </a>
     </li>
-    <li class="integration-list-item">
-      <a href="/preview/klarna_account" class="integration-list-item-link">
-        <div class="title-container">
-          <p class="integration-list-item-title">Klarna - Slice it</p>
+    <li className="integration-list-item">
+      <a href="/preview/klarna_account" className="integration-list-item-link">
+        <div className="title-container">
+          <p className="integration-list-item-title">Klarna - Slice it</p>
         </div>
       </a>
     </li>
