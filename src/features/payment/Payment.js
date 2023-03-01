@@ -63,6 +63,8 @@ const Checkout = () => {
         },
       });
 
+      // The 'ignore' flag is used to avoid double re-rendering caused by React 18 StrictMode
+      // More about it here: https://beta.reactjs.org/learn/synchronizing-with-effects#fetching-data
       if (paymentContainer.current && !ignore) {
         checkout.create(type).mount(paymentContainer.current);
       }
