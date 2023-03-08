@@ -118,51 +118,50 @@ app.post("/api/webhooks/notifications", async (req, res) => {
 
   var ret = false
 
-  // get the notification request from POST body
+  // get notificationItems from body
   const notificationRequestItems = req.body.notificationItems;
 
-  notificationRequestItems.forEach(({ NotificationRequestItem }) => {
-    console.info("Received webhook notification", NotificationRequestItem);
-    
-    if (validator.validateHMAC(NotificationRequestItem, process.env.REACT_APP_ADYEN_HMAC_KEY)) {
-      if (NotificationRequestItem.success === "true") {
-        // Process the notification based on the eventCode
-        if (NotificationRequestItem.eventCode === "AUTHORISATION"){
-          const payment = paymentStore[NotificationRequestItem.merchantReference];
-          if(payment){
-            payment.status = "Authorised";
-            payment.paymentRef = NotificationRequestItem.pspReference;
-          }
-        }
-        else if (NotificationRequestItem.eventCode === "CANCEL_OR_REFUND") {
-          const payment = findPayment(NotificationRequestItem.pspReference);
-          if(payment){
-            console.log("Payment found: ", JSON.stringify(payment));
-            // update with additionalData.modification.action
-            if (
-              "modification.action" in NotificationRequestItem.additionalData &&
-              "refund" === NotificationRequestItem.additionalData["modification.action"]
-            ) {
-              payment.status = "Refunded";
-            } else {
-              payment.status = "Cancelled";
-            }
-          }
-        } 
-        else {
-          console.info("skipping non actionable webhook");
+  // fetch first (and only) NotificationRequestItem
+  const notificationRequestItem = notificationRequestItems[0].NotificationRequestItem
+  console.log(notificationRequestItem)
+  
+  if (validator.validateHMAC(notificationRequestItem, process.env.REACT_APP_ADYEN_HMAC_KEY)) {
+    // valid hmac: process event
+    if (notificationRequestItem.success === "true") {
+      // Process the notification based on the eventCode
+      if (notificationRequestItem.eventCode === "AUTHORISATION"){
+        const payment = paymentStore[notificationRequestItem.merchantReference];
+        if(payment){
+          payment.status = "Authorised";
+          payment.paymentRef = notificationRequestItem.pspReference;
         }
       }
-      // notification ok
-      ret = true
+      else if (notificationRequestItem.eventCode === "CANCEL_OR_REFUND") {
+        const payment = findPayment(notificationRequestItem.pspReference);
+        if(payment) {
+          console.log("Payment found: ", JSON.stringify(payment));
+          // update with additionalData.modification.action
+          if (
+            "modification.action" in notificationRequestItem.additionalData &&
+            "refund" === notificationRequestItem.additionalData["modification.action"]
+          ) {
+            payment.status = "Refunded";
+          } else {
+            payment.status = "Cancelled";
+          }
+        }
+      } 
+      else {
+        console.info("skipping non actionable webhook");
+      }
     }
-    else {
-        // invalid hmac: notification cannot be accepted
-        ret = false
-        return false;  // exit from loop
-    }
-
-  });
+    // notification ok
+    ret = true
+  }
+  else {
+      // invalid hmac: notification cannot be accepted
+      ret = false
+  }
 
   if(ret) {
     res.send('[accepted]')
