@@ -44,7 +44,8 @@ const Checkout = () => {
 
   useEffect(() => {
     const { config, session } = payment;
-    
+    let ignore = false;
+
     if (!session || !paymentContainer.current) {
       // initiateCheckout is not finished yet.
       return;
@@ -62,12 +63,18 @@ const Checkout = () => {
         },
       });
 
-      if (paymentContainer.current) {
+      // The 'ignore' flag is used to avoid double re-rendering caused by React 18 StrictMode
+      // More about it here: https://beta.reactjs.org/learn/synchronizing-with-effects#fetching-data
+      if (paymentContainer.current && !ignore) {
         checkout.create(type).mount(paymentContainer.current);
       }
     }
 
     createCheckout();
+
+    return () => {
+      ignore = true;
+    }
   }, [payment, type, navigate])
 
   return (
