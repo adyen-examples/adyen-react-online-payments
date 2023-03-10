@@ -120,8 +120,8 @@ app.post("/api/webhooks/notifications", async (req, res) => {
   const notificationRequestItems = req.body.notificationItems;
 
   // fetch first (and only) NotificationRequestItem
-  const notificationRequestItem = notificationRequestItems[0].NotificationRequestItem
-  console.log(notificationRequestItem)
+  const notificationRequestItem = notificationRequestItems[0].NotificationRequestItem;
+  console.log(notificationRequestItem);
   
   if (!validator.validateHMAC(notificationRequestItem, process.env.REACT_APP_ADYEN_HMAC_KEY)) {
     // invalid hmac: webhook cannot be accepted
@@ -132,7 +132,7 @@ app.post("/api/webhooks/notifications", async (req, res) => {
   // valid hmac: process event
   if (notificationRequestItem.success === "true") {
     // Process the webhook based on the eventCode
-    if (notificationRequestItem.eventCode === "AUTHORISATION"){
+    if (notificationRequestItem.eventCode === "AUTHORISATION") {
       const payment = paymentStore[notificationRequestItem.merchantReference];
       if(payment){
         payment.status = "Authorised";
@@ -159,7 +159,7 @@ app.post("/api/webhooks/notifications", async (req, res) => {
     }
   }
 
-  res.send('[accepted]')
+  res.send('[accepted]');
   
 });
 
