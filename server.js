@@ -79,9 +79,11 @@ app.post("/api/sessions", async (req, res) => {
     });
 
     // save transaction in memory
+    // enable webhook to confirm the payment (change status to Authorized)
     paymentStore[orderRef] = {
       amount: { currency: "EUR", value: 1000 },
-      reference: orderRef,
+      paymentRef: orderRef,
+      status: "Pending"
     };
 
     res.json([response, orderRef]); // sending a tuple with orderRef as well to inform about the unique order reference
