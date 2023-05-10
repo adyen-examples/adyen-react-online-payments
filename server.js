@@ -23,7 +23,7 @@ dotenv.config({
 
 // Adyen Node.js API library boilerplate (configuration, etc.)
 const config = new Config();
-config.apiKey = process.env.REACT_APP_ADYEN_API_KEY;
+config.apiKey = process.env.ADYEN_API_KEY;
 const client = new Client({ config });
 client.setEnvironment("TEST");
 const checkout = new CheckoutAPI(client);
@@ -37,10 +37,6 @@ const determineHostUrl = (req) => {
     "x-forwarded-proto": forwardedProto,
     "x-forwarded-host": forwardedHost,
   } = req.headers
-
-  if (process.env.REACT_APP_ADYEN_RETURN_URL) {
-    return process.env.REACT_APP_ADYEN_RETURN_URL;
-  }
 
   if (forwardedProto && forwardedHost) {
     if (forwardedProto.includes(",")) {
@@ -69,7 +65,7 @@ app.post("/api/sessions", async (req, res) => {
       countryCode: "NL",
       amount: { currency: "EUR", value: 10000 }, // value is 100€ in minor units
       reference: orderRef, // required
-      merchantAccount: process.env.REACT_APP_ADYEN_MERCHANT_ACCOUNT, // required
+      merchantAccount: process.env.ADYEN_MERCHANT_ACCOUNT, // required
       returnUrl: `${determineHostUrl(req)}/redirect?orderRef=${orderRef}`, // required for 3ds2 redirect flow
       // set lineItems required for some payment methods (ie Klarna)
       lineItems: [
@@ -98,7 +94,7 @@ app.post("/api/cancelOrRefundPayment", async (req, res) => {
   console.log("/api/cancelOrRefundPayment orderRef: " + req.query.orderRef);
   // Create the payload for cancelling payment
   const payload = {
-    merchantAccount: process.env.REACT_APP_ADYEN_MERCHANT_ACCOUNT, // required
+    merchantAccount: process.env.ADYEN_MERCHANT_ACCOUNT, // required
     reference: uuid(),
   };
 
@@ -125,7 +121,7 @@ app.post("/api/webhooks/notifications", async (req, res) => {
   const notificationRequestItem = notificationRequestItems[0].NotificationRequestItem;
   console.log(notificationRequestItem);
   
-  if (!validator.validateHMAC(notificationRequestItem, process.env.REACT_APP_ADYEN_HMAC_KEY)) {
+  if (!validator.validateHMAC(notificationRequestItem, process.env.ADYEN_HMAC_KEY)) {
     // invalid hmac: webhook cannot be accepted
     res.status(401).send('Invalid HMAC signature');
     return;
