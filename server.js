@@ -38,10 +38,6 @@ const determineHostUrl = (req) => {
     "x-forwarded-host": forwardedHost,
   } = req.headers
 
-  if (process.env.ADYEN_RETURN_URL) {
-    return process.env.ADYEN_RETURN_URL;
-  }
-
   if (forwardedProto && forwardedHost) {
     if (forwardedProto.includes(",")) {
       [forwardedProto,] = forwardedProto.split(",")
