@@ -61,7 +61,7 @@ app.post("/api/sessions", async (req, res) => {
     console.log("Received payment request for orderRef: " + orderRef);
     
     // Ideally the data passed here should be computed based on business logic
-    const response = await checkout.sessions({
+    const response = await checkout.PaymentsApi.sessions({
       countryCode: "NL",
       amount: { currency: "EUR", value: 10000 }, // value is 100€ in minor units
       reference: orderRef, // required
