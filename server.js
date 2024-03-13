@@ -157,7 +157,8 @@ app.post("/api/webhooks/notifications", async (req, res) => {
     }
   }
 
-  res.send('[accepted]');
+  // acknowledge event has been consumed
+  res.status(202).send(); // Send a 202 response with an empty body
   
 });
 
