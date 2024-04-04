@@ -7,6 +7,8 @@
 * Set the `ADYEN_API_KEY`, `REACT_APP_ADYEN_CLIENT_KEY`, `ADYEN_HMAC_KEY` and `ADYEN_MERCHANT_ACCOUNT variables`.
 * Click the button below!
 
+> Note: Notice the `REACT_APP_` prefix in the `REACT_APP_ADYEN_CLIENT_KEY`.
+
 _NOTE: To allow the Adyen Drop-In and Components to load, you have to add `https://*.gitpod.io` as allowed origin for your chosen set of [API Credentials](https://ca-test.adyen.com/ca/ca/config/api_credentials_new.shtml)_
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/adyen-examples/adyen-react-online-payments)  
