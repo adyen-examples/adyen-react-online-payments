@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@adyen/adyen-web": "^5.55.1",
+    "@adyen/adyen-web": "^5.66.1",
     "@adyen/api-library": "^16.1.0",
     "@reduxjs/toolkit": "^2.0.1",
     "dotenv": "^16.0.3",
