@@ -5,8 +5,21 @@ name: Node.js CI
 
 on:
   push:
-  pull_request:
     branches: [ main ]
+    paths-ignore:
+      - '**/README.md'
+      - README.md
+      - .gitignore
+      - .gitpod.yml
+      - LICENSE    
+  pull_request_target:
+    branches: [ main ]
+    paths-ignore:
+      - '**/README.md'
+      - README.md
+      - .gitignore
+      - .gitpod.yml
+      - LICENSE    
 
 jobs:
   build:
