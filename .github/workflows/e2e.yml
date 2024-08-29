@@ -4,8 +4,20 @@ on:
   workflow_dispatch:
   push:
     branches: [ main ]
-  pull_request:
+    paths-ignore:
+      - '**/README.md'
+      - README.md
+      - .gitignore
+      - .gitpod.yml
+      - LICENSE    
+  pull_request_target:
     branches: [ main ]
+    paths-ignore:
+      - '**/README.md'
+      - README.md
+      - .gitignore
+      - .gitpod.yml
+      - LICENSE    
 
 jobs:
   checkout:
