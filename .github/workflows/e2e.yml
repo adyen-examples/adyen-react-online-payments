@@ -2,7 +2,6 @@ name: E2E (Playwright)
 
 on:
   workflow_dispatch:
-on:
   push:
     branches: [ main ]
     paths-ignore:
@@ -19,7 +18,7 @@ on:
       - .gitignore
       - .gitpod.yml
       - LICENSE    
-      
+
 jobs:
   checkout:
 
