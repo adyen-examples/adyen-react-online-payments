@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@adyen/adyen-web": "5.68.0",
-    "@adyen/api-library": "^19.2.0",
+    "@adyen/api-library": "^19.3.0",
     "@reduxjs/toolkit": "^2.0.1",
     "dotenv": "^16.0.3",
     "dotenv-cli": "^7.3.0",
