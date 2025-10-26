@@ -1,6 +1,6 @@
 # Adyen [online payment](https://docs.adyen.com/online-payments) integration demos
 
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new/adyen-examples/adyen-react-online-payments?ref=main&dev_container_path=.devcontainer%2Fdevcontainer.json)
 
 ## Details
 
