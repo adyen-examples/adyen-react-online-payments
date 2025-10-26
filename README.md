@@ -1,5 +1,7 @@
 # Adyen [online payment](https://docs.adyen.com/online-payments) integration demos
 
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new)
+
 ## Details
 
 This repository showcases a PCI-compliant integration of the [Sessions Flow](https://docs.adyen.com/online-payments/build-your-integration/additional-use-cases/), the default integration that we recommend for merchants. Explore this simplified e-commerce demo to discover the code, libraries and configuration you need to enable various payment options in your checkout experience.  
@@ -11,6 +13,37 @@ The demo leverages Adyen's API Library for Node.js ([GitHub](https://github.com/
 ## Requirements
 
 Node.js 20+
+
+## Quick Start with GitHub Codespaces
+
+This repository is configured to work seamlessly with [GitHub Codespaces](https://github.com/features/codespaces). Each example can be opened in its own Codespace with all dependencies pre-installed.
+
+For detailed setup instructions, see the [GitHub Codespaces Instructions](https://github.com/adyen-examples/.github/blob/main/pages/codespaces-instructions.md).
+
+### Prerequisites
+
+Before running any example, you'll need to set up the following environment variables in your Codespace:
+
+- `ADYEN_API_KEY` - Your Adyen API key
+- `REACT_APP_ADYEN_CLIENT_KEY` - Your Adyen client key (with REACT_APP prefix for React)
+- `ADYEN_MERCHANT_ACCOUNT` - Your Adyen merchant account
+- `ADYEN_HMAC_KEY` - Your Adyen HMAC key for webhook validation
+
+### Setting Environment Variables
+
+1. Open your Codespace
+2. Go to the "Codespaces" tab in VS Code
+3. Click on "Manage secrets and variables"
+4. Add the required environment variables
+5. Restart your Codespace
+
+Alternatively, you can set them in the terminal:
+```bash
+export ADYEN_API_KEY="your_api_key"
+export REACT_APP_ADYEN_CLIENT_KEY="your_client_key"
+export ADYEN_MERCHANT_ACCOUNT="your_merchant_account"
+export ADYEN_HMAC_KEY="your_hmac_key"
+```
 
 ## Installation
 
