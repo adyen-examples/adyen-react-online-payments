@@ -16,7 +16,7 @@ Node.js 20+
 
 ## Quick Start with GitHub Codespaces
 
-This repository is configured to work seamlessly with [GitHub Codespaces](https://github.com/features/codespaces). Each example can be opened in its own Codespace with all dependencies pre-installed.
+This repository is configured to work with [GitHub Codespaces](https://github.com/features/codespaces). Click the badge above to launch a Codespace with all dependencies pre-installed.
 
 For detailed setup instructions, see the [GitHub Codespaces Instructions](https://github.com/adyen-examples/.github/blob/main/pages/codespaces-instructions.md).
 
@@ -31,13 +31,23 @@ Before running any example, you'll need to set up the following environment vari
 
 ### Setting Environment Variables
 
-1. Open your Codespace
-2. Go to the "Codespaces" tab in VS Code
-3. Click on "Manage secrets and variables"
-4. Add the required environment variables
-5. Restart your Codespace
+You can set environment variables using one of the following methods:
 
-Alternatively, you can set them in the terminal:
+**Option 1: Create a `.env` file in the project root**
+```bash
+ADYEN_API_KEY="your_api_key"
+REACT_APP_ADYEN_CLIENT_KEY="your_client_key"
+ADYEN_MERCHANT_ACCOUNT="your_merchant_account"
+ADYEN_HMAC_KEY="your_hmac_key"
+```
+
+**Option 2: Use Codespace secrets**
+1. Open your Codespace
+2. Go to Settings → Secrets and variables → Codespaces
+3. Add each required environment variable
+4. Restart your Codespace for changes to take effect
+
+**Option 3: Set them in the terminal**
 ```bash
 export ADYEN_API_KEY="your_api_key"
 export REACT_APP_ADYEN_CLIENT_KEY="your_client_key"
