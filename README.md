@@ -1,5 +1,7 @@
 # Adyen [online payment](https://docs.adyen.com/online-payments) integration demos
 
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new/adyen-examples/adyen-react-online-payments?ref=main&dev_container_path=.devcontainer%2Fdevcontainer.json)
+
 ## Details
 
 This repository showcases a PCI-compliant integration of the [Sessions Flow](https://docs.adyen.com/online-payments/build-your-integration/additional-use-cases/), the default integration that we recommend for merchants. Explore this simplified e-commerce demo to discover the code, libraries and configuration you need to enable various payment options in your checkout experience.  
@@ -11,6 +13,47 @@ The demo leverages Adyen's API Library for Node.js ([GitHub](https://github.com/
 ## Requirements
 
 Node.js 20+
+
+## Quick Start with GitHub Codespaces
+
+This repository is configured to work with [GitHub Codespaces](https://github.com/features/codespaces). Click the badge above to launch a Codespace with all dependencies pre-installed.
+
+For detailed setup instructions, see the [GitHub Codespaces Instructions](https://github.com/adyen-examples/.github/blob/main/pages/codespaces-instructions.md).
+
+### Prerequisites
+
+Before running any example, you'll need to set up the following environment variables in your Codespace:
+
+- `ADYEN_API_KEY` - Your Adyen API key
+- `REACT_APP_ADYEN_CLIENT_KEY` - Your Adyen client key (with REACT_APP prefix for React)
+- `ADYEN_MERCHANT_ACCOUNT` - Your Adyen merchant account
+- `ADYEN_HMAC_KEY` - Your Adyen HMAC key for webhook validation
+
+### Setting Environment Variables
+
+You can set environment variables using one of the following methods:
+
+**Option 1: Create a `.env` file in the project root**
+```bash
+ADYEN_API_KEY="your_api_key"
+REACT_APP_ADYEN_CLIENT_KEY="your_client_key"
+ADYEN_MERCHANT_ACCOUNT="your_merchant_account"
+ADYEN_HMAC_KEY="your_hmac_key"
+```
+
+**Option 2: Use Codespace secrets**
+1. Open your Codespace
+2. Go to Settings → Secrets and variables → Codespaces
+3. Add each required environment variable
+4. Restart your Codespace for changes to take effect
+
+**Option 3: Set them in the terminal**
+```bash
+export ADYEN_API_KEY="your_api_key"
+export REACT_APP_ADYEN_CLIENT_KEY="your_client_key"
+export ADYEN_MERCHANT_ACCOUNT="your_merchant_account"
+export ADYEN_HMAC_KEY="your_hmac_key"
+```
 
 ## Installation
 
