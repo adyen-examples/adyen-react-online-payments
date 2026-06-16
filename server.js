@@ -26,7 +26,7 @@ const config = new Config();
 config.apiKey = process.env.ADYEN_API_KEY;
 const client = new Client({ config });
 client.setEnvironment("TEST");
-client.setApplicationName(`adyen-react-online-payments checkout-example adyen-web/5.68.0`);
+client.setApplicationName("[adyen-react-online-payments checkout-example adyen-web/5.68.0]");
 const checkout = new CheckoutAPI(client);
 const validator = new hmacValidator();
 
