@@ -4,6 +4,8 @@ const dotenv = require("dotenv");
 const morgan = require("morgan");
 const { uuid } = require("uuidv4");
 const { Client, Config, CheckoutAPI, hmacValidator } = require("@adyen/api-library");
+const { dependencies } = require("./package.json");
+const adyenWebVersion = (dependencies["@adyen/adyen-web"] || "unknown").replace(/[\^~]/g, "");
 // init app
 const app = express();
 // setup request logging
@@ -26,6 +28,7 @@ const config = new Config();
 config.apiKey = process.env.ADYEN_API_KEY;
 const client = new Client({ config });
 client.setEnvironment("TEST");
+client.setApplicationName(`adyen-react-online-payments checkout-example adyen-web/${adyenWebVersion}`);
 const checkout = new CheckoutAPI(client);
 const validator = new hmacValidator();
 
